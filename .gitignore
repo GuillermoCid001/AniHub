@@ -1,0 +1,8 @@
+# Ignorar videos pesados
+*.mp4
+*.mkv
+*.avi
+
+# Ignorar carpetas de contenido multimedia
+series/
+recursos/videos/

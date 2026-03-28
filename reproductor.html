@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Reproduciendo...</title>
+    <link rel="stylesheet" href="recursos/css/global.css"> 
+</head>
+<body class="player-page">
+
+    <div class="main-content">
+        <div class="video-player-area">
+            <a href="serie.html" class="back-link" style="margin-bottom: 15px;">← Volver a la lista de capítulos</a>
+            
+            <video controls autoplay id="video-player">
+                <source src=" " type="video/mp4" id="video-source">
+                Tu navegador no soporta el reproductor de video.
+            </video>
+
+            <div class="video-meta">
+                <h1 id="cap-title">Cargando Título...</h1>
+                <p id="cap-description"><strong>Descripción:</strong> Cargando descripción...</p>
+                <p id="cap-meta"><strong>Duración:</strong> 24m | **Fecha de emisión:** 2004</p>
+            </div>
+        </div>
+        
+        <div class="sidebar">
+            <h3>Siguiente en la Lista</h3>
+
+            <a href="#" class="next-episode-item">
+                <div class="next-thumb">Cap 2</div>
+                <div class="next-details">
+                    <strong>2. El Trabajo de un Shinigami</strong>
+                    <span>45m - Disponible</span>
+                </div>
+            </a>
+            
+           
+        </div>
+    </div>
+    
+    <script src="recursos/js/datos.js"></script>
+    <script src="recursos/js/reproductor.js"></script>
+</body>
+</html>

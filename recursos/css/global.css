@@ -1,0 +1,517 @@
+body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background-color: #141414;
+    color: #fff;
+    padding: 20px;
+    margin: 0;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+
+.header {
+    color: #e50914;
+    font-size: 2em;
+    margin-bottom: 30px;
+    font-weight: bold;
+}
+
+.series-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 30px;
+}
+
+.serie-item {
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+     border-radius: 4px;
+}
+
+.serie-item:hover {
+    transform: scale(1.05);
+    z-index: 10;
+}
+
+.serie-poster {
+    width: 100%;
+    border-radius: 4px;
+    aspect-ratio: 3/4;
+    background-color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2em;
+    font-weight: bold;
+    text-align: center;
+    padding: 10px;
+    object-fit: contain; 
+    display: block;
+}
+
+.serie-title {
+    margin-top: 8px;
+    font-size: 0.9em;
+    font-weight: 500;
+    text-align: left;
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis; 
+}
+/* --- Estilos para la Página de Login (login.html) --- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  min-height: 100vh;
+  background: #141414;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'DM Sans', sans-serif;
+  position: relative;
+  overflow: hidden;
+  color: #fff;
+}
+
+.bg-overlay {
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(229,9,20,0.10) 0%, transparent 70%),
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 39px,
+      rgba(255,255,255,0.015) 39px,
+      rgba(255,255,255,0.015) 40px
+    );
+  pointer-events: none;
+}
+
+.login-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 400px;
+  padding: 0 20px;
+}
+
+.brand {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 3em;
+  color: #e50914;
+  letter-spacing: 2px;
+  text-align: center;
+  margin-bottom: 36px;
+  line-height: 1;
+}
+
+.login-title {
+  font-size: 1.5em;
+  font-weight: 300;
+  color: #fff;
+  margin-bottom: 28px;
+  text-align: center;
+  letter-spacing: 0.02em;
+}
+
+.field-group {
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.field-group label {
+  display: block;
+  font-size: 0.72em;
+  font-weight: 500;
+  color: #888;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 7px;
+}
+
+.field-group input {
+  width: 100%;
+  background: #222;
+  border: 1px solid #333;
+  border-radius: 4px;
+  color: #fff;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95em;
+  font-weight: 300;
+  padding: 13px 16px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.field-group input:focus {
+  border-color: #e50914;
+}
+
+.field-group input::placeholder {
+  color: #555;
+}
+
+.options-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  margin-top: 4px;
+}
+
+.remember-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82em;
+  color: #888;
+  cursor: pointer;
+  user-select: none;
+}
+
+.remember-label input[type=checkbox] {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border: 1px solid #555;
+  border-radius: 2px;
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+}
+
+.remember-label input[type=checkbox]:checked {
+  background: #e50914;
+  border-color: #e50914;
+}
+
+.remember-label input[type=checkbox]:checked::after {
+  content: '';
+  position: absolute;
+  left: 3px;
+  top: 1px;
+  width: 5px;
+  height: 8px;
+  border: 1.5px solid #fff;
+  border-top: none;
+  border-left: none;
+  transform: rotate(45deg);
+}
+
+.forgot-link {
+  font-size: 0.82em;
+  color: #888;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.forgot-link:hover { color: #e50914; }
+
+.btn-login {
+  width: 100%;
+  background: #e50914;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1em;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  padding: 14px;
+  cursor: pointer;
+  transition: background 0.18s, transform 0.12s;
+  margin-bottom: 20px;
+}
+
+.btn-login:hover { background: #c40812; }
+.btn-login:active { transform: scale(0.98); }
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.divider-line {
+  flex: 1;
+  height: 1px;
+  background: #2a2a2a;
+}
+
+.divider-text {
+  font-size: 0.75em;
+  color: #555;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.btn-code {
+  width: 100%;
+  background: transparent;
+  color: #ccc;
+  border: 1px solid #333;
+  border-radius: 4px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9em;
+  font-weight: 400;
+  padding: 12px;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+  margin-bottom: 24px;
+}
+
+.btn-code:hover { border-color: #888; color: #fff; }
+
+.signup-row {
+  text-align: center;
+  font-size: 0.85em;
+  color: #666;
+}
+
+.signup-row a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.signup-row a:hover { color: #e50914; }
+
+.bottom-bar {
+  position: fixed;
+  bottom: 16px;
+  left: 0; right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  z-index: 1;
+}
+
+.bottom-bar a {
+  font-size: 0.72em;
+  color: #444;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.bottom-bar a:hover { color: #888; }
+
+.accent-bar {
+  width: 40px;
+  height: 3px;
+  background: #e50914;
+  border-radius: 2px;
+  margin: 0 auto 32px;
+}
+
+
+/* --- Estilos para la Lista de serie(serie.html) --- */
+
+.back-link {
+    color: #fff;
+    font-size: 1em;
+    margin-bottom: 20px;
+    display: inline-block;
+    transition: color 0.2s;
+}
+
+.back-link:hover {
+    color: #e50914;
+}
+
+.serie-info {
+    display: flex;
+    margin-bottom: 40px;
+    align-items: flex-start;
+}
+
+.serie-info-poster {
+    width: 250px;
+    height: auto;
+    border-radius: 6px;
+    margin-right: 30px;
+    background-color: #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.serie-details h1 {
+    color: #e50914;
+    font-size: 2.5em;
+    margin-top: 0;
+}
+
+.serie-details p {
+    font-size: 1.1em;
+    line-height: 1.5;
+    color: #ccc;
+}
+
+.capitulos-list h2 {
+    color: #ccc;
+    border-bottom: 1px solid #333;
+    padding-bottom: 10px;
+    margin-top: 30px;
+}
+
+.capitulo-item {
+    display: flex;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #222;
+    transition: background-color 0.2s;
+}
+
+.capitulo-link {
+    display: block; 
+    cursor: pointer;
+}
+
+.capitulo-item:hover {
+    background-color: #2a2a2a;
+}
+
+.capitulo-thumb {
+    width: 150px;
+    height: 84px;
+    background-color: #444;
+    border-radius: 4px;
+    margin-right: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9em;
+    flex-shrink: 0;
+    overflow: hidden; 
+}
+
+.capitulo-thumb .capitulo-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.capitulo-details h3 {
+    margin: 0 0 5px 0;
+    font-size: 1.2em;
+    color: #fff;
+}
+
+.capitulo-details p {
+    margin: 0;
+    font-size: 0.9em;
+    color: #aaa;
+}
+
+
+/* --- Estilos para la Página de Reproductor (reproductor.html) --- */
+
+body.player-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.main-content {
+    display: flex;
+    max-width: 1400px;
+    width: 100%;
+    margin: 20px auto;
+    flex-grow: 1;
+}
+
+.video-player-area {
+    flex: 3;
+    padding-right: 30px;
+}
+
+.sidebar {
+    flex: 1;
+    min-width: 300px;
+    background-color: #222;
+    padding: 15px;
+    border-radius: 6px;
+    height: fit-content;
+}
+
+.video-player-area video {
+    width: 100%;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.video-meta h1 {
+    font-size: 1.8em;
+    color: #fff;
+    margin-bottom: 5px;
+}
+
+.video-meta p {
+    color: #aaa;
+    font-size: 1em;
+    margin-top: 0;
+    line-height: 1.5;
+}
+
+
+/* Estilos de la lista de reproducción en la barra lateral */
+.sidebar h3 {
+    color: #e50914;
+    border-bottom: 1px solid #333;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    font-size: 1.2em;
+}
+
+.next-episode-item {
+    display: flex;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    padding: 8px;
+    border-radius: 4px;
+}
+
+.next-episode-item:hover {
+    background-color: #333;
+}
+
+.next-thumb {
+    width: 80px;
+    height: 45px;
+    background-color: #444;
+    border-radius: 3px;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8em;
+    flex-shrink: 0;
+}
+
+.next-details strong {
+    display: block;
+    font-size: 0.9em;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.next-details span {
+    font-size: 0.8em;
+    color: #999;
+}
