@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Login</title>
+        <title>AniHub - Login</title>
         <link rel="stylesheet" href="recursos/css/global.css">
     </head>
 <body>
@@ -16,33 +16,34 @@
     <p class="login-title">Bienvenido de vuelta</p>
 
     <div class="field-group">
-      <label>Correo electrónico</label>
-      <input type="email" placeholder="tu@email.com" />
+      <label>Usuario</label>
+      <input type="text" id="username" placeholder="tu usuario" />
     </div>
 
     <div class="field-group">
       <label>Contraseña</label>
-      <input type="password" placeholder="••••••••" />
+      <input type="password" id="password" placeholder="••••••••" />
     </div>
+
+    <div id="login-error" style="
+        color: #e50914;
+        font-size: 0.85em;
+        margin-bottom: 12px;
+        display: none;
+    ">Usuario o contraseña incorrectos</div>
 
     <div class="options-row">
       <label class="remember-label">
         <input type="checkbox" />
         Recuérdame
       </label>
-      <a class="forgot-link" href="#">¿Olvidaste tu contraseña?</a>
     </div>
 
-    <button class="btn-login">Iniciar sesión</button>
+    <button class="btn-login" id="btn-login">Iniciar sesión</button>
 
-    <div class="divider">
-      <div class="divider-line"></div>
-      <div class="divider-line"></div>
-    </div>
-
-
-
-    <p class="signup-row">¿Primera vez aquí? <a href="#">Crear cuenta</a></p>
+    <p class="signup-row" style="margin-top: 20px; color: #666; font-size: 0.85em; text-align:center;">
+        Acceso restringido — solo usuarios registrados
+    </p>
   </div>
 
   <div class="bottom-bar">
@@ -50,6 +51,66 @@
     <a href="#">Privacidad</a>
     <a href="#">Condiciones</a>
   </div>
+
+  <script>
+    const BACKEND_URL = 'http://localhost:3000';
+
+    document.getElementById('btn-login').addEventListener('click', async () => {
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value.trim();
+        const errorEl = document.getElementById('login-error');
+        const btn = document.getElementById('btn-login');
+
+        if (!username || !password) {
+            errorEl.textContent = 'Rellena todos los campos';
+            errorEl.style.display = 'block';
+            return;
+        }
+
+        btn.textContent = 'Entrando...';
+        btn.disabled = true;
+        errorEl.style.display = 'none';
+
+        try {
+            const res = await fetch(`${BACKEND_URL}/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                errorEl.textContent = data.error || 'Error al iniciar sesión';
+                errorEl.style.display = 'block';
+                btn.textContent = 'Iniciar sesión';
+                btn.disabled = false;
+                return;
+            }
+
+            localStorage.setItem('anihub_token', data.token);
+            localStorage.setItem('anihub_user', JSON.stringify({
+                username: data.username,
+                role: data.role
+            }));
+
+            window.location.href = 'index.html';
+
+        } catch (err) {
+            errorEl.textContent = 'No se puede conectar con el servidor';
+            errorEl.style.display = 'block';
+            btn.textContent = 'Iniciar sesión';
+            btn.disabled = false;
+        }
+    });
+
+    // Login también con Enter
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            document.getElementById('btn-login').click();
+        }
+    });
+  </script>
 
 </body>
 </html>

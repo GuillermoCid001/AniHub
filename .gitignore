@@ -6,3 +6,10 @@
 # Ignorar carpetas de contenido multimedia
 series/
 recursos/videos/
+
+# Node
+backend/node_modules/
+
+# Variables de entorno
+.env
+backend/.env

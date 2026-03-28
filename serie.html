@@ -5,8 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="page-title">AniHub - Cargando...</title>
     <link rel="stylesheet" href="recursos/css/global.css">
+    <script src="recursos/js/auth.js"></script>
 </head>
 <body>
+    <div id="user-info" style="
+    position: fixed;
+    top: 15px;
+    right: 20px;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+"></div>
+<script>
+    verificarToken().then(user => {
+        if (user) mostrarUsuario();
+    });
+</script>
     <div class="main-container">
 
         <a href="index.html" class="back-link">← Volver a la cartelera</a>
