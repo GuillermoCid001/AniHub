@@ -1,56 +1,1224 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AniHub</title>
-    <link rel="stylesheet" href="recursos/css/global.css">
-    <script src="recursos/js/auth.js"></script>
-    <style>
-      /* Fade de entrada desde negro */
-      body {
-        animation: fadeInPage 0.6s ease forwards;
-      }
-      @keyframes fadeInPage {
-        from { opacity: 0; }
-        to   { opacity: 1; }
-      }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AniHub</title>
+  <link rel="stylesheet" href="recursos/css/global.css">
+  <script src="recursos/js/auth.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red: #e50914;
+      --red-hover: #f40612;
+      --dark: #141414;
+      --card-bg: #1a1a1a;
+      --text: #e5e5e5;
+      --text-muted: #999;
+      --nav-h: 68px;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      height: auto !important;
+      min-height: 100% !important;
+      overflow: auto !important;
+    }
+
+    body {
+      background: var(--dark) !important;
+      color: var(--text) !important;
+      font-family: 'Inter', sans-serif !important;
+      /* Resetear lo que rompe el global.css del login */
+      display: block !important;
+      align-items: unset !important;
+      justify-content: unset !important;
+      overflow: auto !important;
+      overflow-x: hidden !important;
+      height: auto !important;
+      min-height: 100vh !important;
+      padding: 0 !important;
+      position: static !important;
+      animation: fadeInPage 0.5s ease forwards;
+    }
+
+    @keyframes fadeInPage {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* ── NAVBAR ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 4%;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.85) 0%, transparent 100%);
+      transition: background 0.3s;
+    }
+    nav.scrolled {
+      background: rgba(20, 20, 20, 0.97);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    }
+
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      color: var(--red);
+      letter-spacing: 3px;
+      text-decoration: none;
+      user-select: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 24px;
+      list-style: none;
+    }
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: #fff; }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    #user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .btn-login {
+      background: var(--red);
+      color: #fff;
+      border: none;
+      padding: 7px 16px;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .btn-login:hover { background: var(--red-hover); }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      height: 75vh;
+      max-height: 680px;
+      min-height: 420px;
+      display: flex;
+      align-items: flex-end;
+      padding: 0 4% 5%;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background:
+        linear-gradient(to right, rgba(20,20,20,0.95) 30%, transparent 70%),
+        linear-gradient(to top, rgba(20,20,20,1) 0%, transparent 40%),
+        url('https://i.imgur.com/placeholder.jpg') center/cover no-repeat;
+      background-color: #0d0d0d;
+    }
+
+    /* Patrón de fondo animado cuando no hay imagen */
+    .hero-bg::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 70% 40%, rgba(229,9,20,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse at 20% 60%, rgba(229,9,20,0.06) 0%, transparent 50%);
+      animation: heroPulse 6s ease-in-out infinite alternate;
+    }
+    @keyframes heroPulse {
+      from { opacity: 0.6; }
+      to { opacity: 1; }
+    }
+
+    /* Letras kanji decorativas */
+    .hero-bg::after {
+      content: '漫画 • アニメ • 趣味';
+      position: absolute;
+      top: 12%;
+      right: 5%;
+      font-size: 1.1rem;
+      letter-spacing: 6px;
+      color: rgba(229,9,20,0.15);
+      font-family: serif;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 580px;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: var(--red);
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 2px;
+      margin-bottom: 14px;
+    }
+
+    .hero-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3rem, 7vw, 5.5rem);
+      line-height: 1;
+      letter-spacing: 2px;
+      color: #fff;
+      text-shadow: 2px 4px 20px rgba(0,0,0,0.8);
+      margin-bottom: 16px;
+    }
+
+    .hero-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+      font-size: 0.85rem;
+    }
+    .hero-rating { color: #46d369; font-weight: 700; }
+    .hero-year { color: var(--text-muted); }
+    .hero-tag {
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 2px 8px;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .hero-desc {
+      font-size: 0.95rem;
+      line-height: 1.65;
+      color: rgba(229,229,229,0.85);
+      margin-bottom: 24px;
+      max-width: 480px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn-play {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #fff;
+      color: #000;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 4px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-play:hover { background: rgba(255,255,255,0.85); transform: scale(1.03); }
+    .btn-play svg { width: 20px; height: 20px; }
+
+    .btn-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(109,109,110,0.7);
+      color: #fff;
+      border: none;
+      padding: 10px 22px;
+      border-radius: 4px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s;
+      backdrop-filter: blur(4px);
+    }
+    .btn-info:hover { background: rgba(109,109,110,0.5); }
+    .btn-info svg { width: 20px; height: 20px; }
+
+    /* ── SECCIONES TIPO NETFLIX ── */
+    .sections {
+      padding: 0 0 60px;
+    }
+
+    .section {
+      margin-bottom: 48px;
+      padding: 0 4%;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem;
+      letter-spacing: 1px;
+      color: #fff;
+    }
+
+    .section-see-all {
+      font-size: 0.78rem;
+      color: var(--red);
+      text-decoration: none;
+      font-weight: 600;
+      opacity: 0;
+      transform: translateX(-8px);
+      transition: opacity 0.3s, transform 0.3s;
+    }
+    .section:hover .section-see-all {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* Fila horizontal con scroll */
+    .row-wrapper {
+      position: relative;
+    }
+
+    .row {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+      padding-bottom: 8px;
+    }
+    .row::-webkit-scrollbar { display: none; }
+
+    .row-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+      background: rgba(20,20,20,0.85);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: #fff;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.2s, background 0.2s;
+      font-size: 1.2rem;
+    }
+    .row-btn.left  { left: -16px; }
+    .row-btn.right { right: -16px; }
+    .row-wrapper:hover .row-btn { opacity: 1; }
+    .row-btn:hover { background: rgba(229,9,20,0.85); }
+
+    /* ── CARD ── */
+    .card {
+      flex: 0 0 calc(20% - 7px);
+      min-width: 160px;
+      max-width: 220px;
+      position: relative;
+      border-radius: 6px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.3s cubic-bezier(.25,.46,.45,.94), z-index 0s 0.3s;
+      background: var(--card-bg);
+    }
+
+    .card:hover {
+      transform: scale(1.12) translateY(-6px);
+      z-index: 10;
+      transition: transform 0.3s cubic-bezier(.25,.46,.45,.94), z-index 0s;
+      box-shadow: 0 14px 40px rgba(0,0,0,0.7);
+    }
+
+    .card img {
+      width: 100%;
+      aspect-ratio: 2/3;
+      object-fit: cover;
+      display: block;
+      background: #222;
+    }
+
+    /* Placeholder cuando no hay imagen */
+    .card-placeholder {
+      width: 100%;
+      aspect-ratio: 2/3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #1c1c1c 0%, #2a2a2a 100%);
+      font-size: 3rem;
+      gap: 10px;
+    }
+    .card-placeholder span {
+      font-size: 0.7rem;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      text-align: center;
+      padding: 0 8px;
+    }
+
+    .card-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, transparent 55%);
+      opacity: 0;
+      transition: opacity 0.3s;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 12px;
+      gap: 6px;
+    }
+    .card:hover .card-overlay { opacity: 1; }
+
+    .card-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.5px;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .card-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(255,255,255,0.7);
+      background: rgba(0,0,0,0.4);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 0.7rem;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .card-btn.primary { background: #fff; color: #000; border-color: #fff; }
+    .card-btn:hover { background: rgba(255,255,255,0.2); }
+    .card-btn.primary:hover { background: rgba(255,255,255,0.85); }
+
+    .card-rating {
+      font-size: 0.7rem;
+      color: #46d369;
+      font-weight: 700;
+    }
+
+    .card-tags {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+    .card-tag {
+      font-size: 0.62rem;
+      color: var(--text-muted);
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 1px 5px;
+      border-radius: 2px;
+    }
+
+    /* ── BANNER DESTACADO ── */
+    .banner-section {
+      margin: 24px 4% 48px;
+      border-radius: 8px;
+      overflow: hidden;
+      position: relative;
+      min-height: 200px;
+      display: flex;
+      align-items: center;
+      padding: 40px 5%;
+      background: linear-gradient(135deg, #1a0000 0%, #2d0a0a 50%, #1a1a1a 100%);
+      border: 1px solid rgba(229,9,20,0.2);
+    }
+    .banner-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 80% 50%, rgba(229,9,20,0.15) 0%, transparent 60%);
+    }
+    .banner-content { position: relative; z-index: 1; max-width: 500px; }
+    .banner-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 8px;
+    }
+    .banner-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.2rem;
+      letter-spacing: 2px;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .banner-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+    .banner-deco {
+      position: absolute;
+      right: 5%;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 8rem;
+      opacity: 0.07;
+      font-family: serif;
+      pointer-events: none;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 40px 4% 20px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .footer-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem;
+      color: var(--red);
+      letter-spacing: 3px;
+      margin-bottom: 16px;
+    }
+    .footer-links {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+    .footer-links a {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: #fff; }
+    .footer-copy {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.25);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hero { height: 70vh; padding-bottom: 10%; }
+      .hero-desc { display: none; }
+      .card { flex: 0 0 calc(33.33% - 6px); min-width: 120px; }
+      .banner-deco { display: none; }
+    }
+    @media (max-width: 480px) {
+      .card { flex: 0 0 calc(50% - 4px); min-width: 100px; }
+    }
+
+    /* ══════════════════════════════════════
+       MODAL SERIE — estilo Netflix
+    ══════════════════════════════════════ */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      z-index: 500;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 16px 40px;
+      overflow-y: auto;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .modal-backdrop.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal {
+      background: #181818;
+      border-radius: 8px;
+      width: 100%;
+      max-width: 860px;
+      position: relative;
+      transform: translateY(30px) scale(0.97);
+      transition: transform 0.3s cubic-bezier(.25,.46,.45,.94);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .modal-backdrop.open .modal {
+      transform: translateY(0) scale(1);
+    }
+
+    /* Cabecera con imagen grande */
+    .modal-hero {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16/7;
+      background: #0a0a0a;
+      overflow: hidden;
+    }
+    .modal-hero-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+    }
+    .modal-hero-grad {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, #181818 0%, transparent 50%),
+                  linear-gradient(to right, rgba(0,0,0,0.4) 0%, transparent 60%);
+    }
+
+    /* Logo / título encima de la imagen */
+    .modal-hero-info {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 0 32px 24px;
+    }
+    .modal-hero-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      letter-spacing: 2px;
+      color: #fff;
+      line-height: 1;
+      margin-bottom: 16px;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.6);
+    }
+    .modal-hero-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .modal-btn-play {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #fff;
+      color: #000;
+      border: none;
+      padding: 9px 22px;
+      border-radius: 4px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .modal-btn-play:hover { background: rgba(255,255,255,0.85); }
+    .modal-btn-list {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(109,109,110,0.7);
+      color: #fff;
+      border: none;
+      padding: 9px 18px;
+      border-radius: 4px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s;
+      backdrop-filter: blur(4px);
+    }
+    .modal-btn-list:hover { background: rgba(109,109,110,0.5); }
+
+    /* Botón cerrar */
+    .modal-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #181818;
+      border: none;
+      color: #fff;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      transition: background 0.2s;
+    }
+    .modal-close:hover { background: #333; }
+
+    /* Cuerpo del modal */
+    .modal-body {
+      padding: 20px 32px 32px;
+    }
+
+    .modal-meta-row {
+      display: flex;
+      gap: 32px;
+      margin-bottom: 20px;
+    }
+
+    .modal-meta-left { flex: 1; min-width: 0; }
+    .modal-meta-right { width: 240px; flex-shrink: 0; font-size: 0.78rem; color: #777; line-height: 1.8; }
+    .modal-meta-right span { color: #e5e5e5; }
+
+    .modal-info-line {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      font-size: 0.82rem;
+      flex-wrap: wrap;
+    }
+    .modal-year { color: #46d369; font-weight: 600; }
+    .modal-seasons { color: #e5e5e5; }
+    .modal-hd {
+      border: 1px solid rgba(255,255,255,0.4);
+      padding: 1px 5px;
+      border-radius: 2px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: rgba(255,255,255,0.7);
+      letter-spacing: 0.5px;
+    }
+    .modal-age {
+      background: #e87c03;
+      color: #fff;
+      padding: 1px 6px;
+      border-radius: 2px;
+      font-size: 0.68rem;
+      font-weight: 700;
+    }
+
+    .modal-synopsis {
+      font-size: 0.88rem;
+      line-height: 1.65;
+      color: #d2d2d2;
+    }
+
+    /* Sección de episodios */
+    .modal-eps-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    .modal-eps-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .modal-season-badge {
+      font-size: 0.78rem;
+      color: #e5e5e5;
+      background: rgba(255,255,255,0.08);
+      padding: 4px 12px;
+      border-radius: 4px;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+
+    /* Item de episodio */
+    .modal-ep {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 12px 8px;
+      border-radius: 4px;
+      text-decoration: none;
+      color: inherit;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      transition: background 0.15s;
+    }
+    .modal-ep:hover { background: rgba(255,255,255,0.06); }
+
+    .modal-ep-num {
+      font-size: 1.5rem;
+      font-weight: 300;
+      color: rgba(255,255,255,0.2);
+      width: 32px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .modal-ep-thumb {
+      width: 130px;
+      height: 73px;
+      border-radius: 4px;
+      background: #2a2a2a;
+      flex-shrink: 0;
+      overflow: hidden;
+      position: relative;
+    }
+    .modal-ep-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.3s;
+    }
+    .modal-ep:hover .modal-ep-thumb img { transform: scale(1.05); }
+    .modal-ep-thumb-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,0.2);
+      font-size: 0.7rem;
+    }
+    /* Play overlay en thumb */
+    .modal-ep-thumb::after {
+      content: '▶';
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.5);
+      font-size: 1.1rem;
+      color: #fff;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .modal-ep:hover .modal-ep-thumb::after { opacity: 1; }
+
+    .modal-ep-info { flex: 1; min-width: 0; }
+    .modal-ep-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 5px;
+    }
+    .modal-ep-name {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .modal-ep-dur {
+      font-size: 0.75rem;
+      color: #777;
+      flex-shrink: 0;
+    }
+    .modal-ep-desc {
+      font-size: 0.78rem;
+      color: #999;
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    @media (max-width: 600px) {
+      .modal-body { padding: 16px 18px 24px; }
+      .modal-meta-row { flex-direction: column; gap: 16px; }
+      .modal-meta-right { width: 100%; }
+      .modal-hero-info { padding: 0 18px 18px; }
+      .modal-ep-thumb { width: 100px; height: 56px; }
+    }
+  </style>
 </head>
 <body>
-    <div id="user-info" style="
-        position: fixed;
-        top: 15px;
-        right: 20px;
-        z-index: 999;
-        display: flex;
-        align-items: center;
-    "></div>
 
-    <script>
-        verificarToken().then(user => {
-            if (user) mostrarUsuario();
-        });
-    </script>
+  <!-- NAVBAR -->
+  <nav id="navbar">
+    <a href="index.html" class="nav-logo">AniHub</a>
 
-    <div class="header">AniHub</div>
+    <ul class="nav-links">
+      <li><a href="#">Inicio</a></li>
+      <li><a href="#">Series</a></li>
+      <li><a href="#">Películas</a></li>
+      <li><a href="#">Shonen</a></li>
+      <li><a href="#">Seinen</a></li>
+      <li><a href="#">Mi Lista</a></li>
+    </ul>
 
-    <h2>Frikadas</h2>
-
-    <div class="series-grid">
-        <div class="serie-item">
-            <a href="serie.html?id=bleach">
-                <img src="recursos/img/bleach-mini.png" alt="Póster de la serie BLEACH" class="serie-poster">
-                <div class="serie-title">BLEACH</div>
-            </a>
-        </div>
-        <div class="serie-item">
-            <a href="serie.html?id=dragonball">
-                <img src="recursos/img/db-mini.jpg" alt="Póster de la serie Dragon Ball" class="serie-poster">
-                <div class="serie-title">DRAGON BALL</div>
-            </a>
-        </div>
+    <div class="nav-right">
+      <div id="user-info"></div>
     </div>
+  </nav>
+
+  <script>
+    // Navbar scroll
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    // Auth
+    if (typeof verificarToken === 'function') {
+      verificarToken().then(user => {
+        if (user && typeof mostrarUsuario === 'function') mostrarUsuario();
+        else {
+          document.getElementById('user-info').innerHTML =
+            '<a href="login.html" class="btn-login">Iniciar sesión</a>';
+        }
+      }).catch(() => {
+        document.getElementById('user-info').innerHTML =
+          '<a href="login.html" class="btn-login">Iniciar sesión</a>';
+      });
+    }
+  </script>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <span class="hero-badge">★ Destacado</span>
+      <h1 class="hero-title">BLEACH<br>TYBW</h1>
+      <div class="hero-meta">
+        <span class="hero-rating">98% relevante</span>
+        <span class="hero-year">2022–2024</span>
+        <span class="hero-tag">Shonen</span>
+        <span class="hero-tag">Acción</span>
+      </div>
+      <p class="hero-desc">
+        El arco final de Bleach. Ichigo Kurosaki y los Shinigami se enfrentan a los Quincy en la guerra definitiva que pondrá fin a más de 20 años de historia.
+      </p>
+      <div class="hero-actions">
+        <button class="btn-play" onclick="openModal('bleach')">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M8 5v14l11-7z"/></svg>
+          Ver ahora
+        </button>
+        <button class="btn-info" onclick="openModal('bleach')">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+          Más info
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIONES -->
+  <div class="sections">
+
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">Frikadas</h2>
+        <a href="#" class="section-see-all">Ver todo &rsaquo;</a>
+      </div>
+      <div class="row-wrapper">
+        <button class="row-btn left" onclick="scrollRow(this, -1)">&#8249;</button>
+        <div class="row">
+          <div class="card" data-serie="bleach">
+            <img src="recursos/img/bleach-mini.png" alt="BLEACH" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-placeholder" style="display:none">⚔️<span>BLEACH</span></div>
+            <div class="card-overlay">
+              <div class="card-title">BLEACH</div>
+              <div class="card-actions">
+                <div class="card-btn primary">▶</div>
+                <div class="card-btn">+</div>
+                <div class="card-btn">♡</div>
+              </div>
+              <div class="card-rating">98% relevante</div>
+              <div class="card-tags"><span class="card-tag">Shonen</span><span class="card-tag">Acción</span></div>
+            </div>
+          </div>
+          <div class="card" data-serie="dragonball">
+            <img src="recursos/img/db-mini.jpg" alt="Dragon Ball" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-placeholder" style="display:none">🐉<span>DRAGON BALL</span></div>
+            <div class="card-overlay">
+              <div class="card-title">DRAGON BALL</div>
+              <div class="card-actions">
+                <div class="card-btn primary">▶</div>
+                <div class="card-btn">+</div>
+                <div class="card-btn">♡</div>
+              </div>
+              <div class="card-rating">96% relevante</div>
+              <div class="card-tags"><span class="card-tag">Shonen</span><span class="card-tag">Aventura</span></div>
+            </div>
+          </div>
+          <div class="card"><div class="card-placeholder">🗡️<span>Próximamente</span></div></div>
+          <div class="card"><div class="card-placeholder">🔥<span>Próximamente</span></div></div>
+          <div class="card"><div class="card-placeholder">⚡<span>Próximamente</span></div></div>
+        </div>
+        <button class="row-btn right" onclick="scrollRow(this, 1)">&#8250;</button>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">Más vistos esta semana</h2>
+        <a href="#" class="section-see-all">Ver todo &rsaquo;</a>
+      </div>
+      <div class="row-wrapper">
+        <button class="row-btn left" onclick="scrollRow(this, -1)">&#8249;</button>
+        <div class="row">
+          <div class="card" data-serie="dragonball">
+            <img src="recursos/img/db-mini.jpg" alt="Dragon Ball" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-placeholder" style="display:none">🐉<span>DRAGON BALL</span></div>
+            <div class="card-overlay">
+              <div class="card-title">DRAGON BALL</div>
+              <div class="card-actions"><div class="card-btn primary">▶</div><div class="card-btn">+</div></div>
+              <div class="card-rating">96% relevante</div>
+            </div>
+          </div>
+          <div class="card" data-serie="bleach">
+            <img src="recursos/img/bleach-mini.png" alt="BLEACH" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-placeholder" style="display:none">⚔️<span>BLEACH</span></div>
+            <div class="card-overlay">
+              <div class="card-title">BLEACH</div>
+              <div class="card-actions"><div class="card-btn primary">▶</div><div class="card-btn">+</div></div>
+              <div class="card-rating">98% relevante</div>
+            </div>
+          </div>
+          <div class="card"><div class="card-placeholder">🌙<span>Próximamente</span></div></div>
+          <div class="card"><div class="card-placeholder">💀<span>Próximamente</span></div></div>
+          <div class="card"><div class="card-placeholder">🏯<span>Próximamente</span></div></div>
+          <div class="card"><div class="card-placeholder">🌊<span>Próximamente</span></div></div>
+        </div>
+        <button class="row-btn right" onclick="scrollRow(this, 1)">&#8250;</button>
+      </div>
+    </section>
+
+    <div class="banner-section">
+      <div class="banner-deco">AniHub</div>
+      <div class="banner-content">
+        <div class="banner-label">★ Colección especial</div>
+        <div class="banner-title">Arcos Épicos</div>
+        <p class="banner-desc">Los mejores arcos argumentales del anime. Batallas legendarias, giros de guion y momentos que marcaron generaciones.</p>
+        <a href="#" class="btn-play" style="display:inline-flex">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M8 5v14l11-7z"/></svg>
+          Explorar colección
+        </a>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">Shonen Clásico</h2>
+        <a href="#" class="section-see-all">Ver todo &rsaquo;</a>
+      </div>
+      <div class="row-wrapper">
+        <button class="row-btn left" onclick="scrollRow(this, -1)">&#8249;</button>
+        <div class="row">
+          <div class="card"><div class="card-placeholder">🍃<span>Próximamente</span></div></div>
+          <div class="card"><div class="card-placeholder">🔮<span>Próximamente</span></div></div>
+          <div class="card"><div class="card-placeholder">⚓<span>Próximamente</span></div></div>
+          <div class="card"><div class="card-placeholder">🎴<span>Próximamente</span></div></div>
+          <div class="card"><div class="card-placeholder">🦊<span>Próximamente</span></div></div>
+          <div class="card"><div class="card-placeholder">🏹<span>Próximamente</span></div></div>
+        </div>
+        <button class="row-btn right" onclick="scrollRow(this, 1)">&#8250;</button>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">Continúa viendo</h2>
+        <a href="#" class="section-see-all">Ver todo &rsaquo;</a>
+      </div>
+      <div class="row-wrapper">
+        <button class="row-btn left" onclick="scrollRow(this, -1)">&#8249;</button>
+        <div class="row">
+          <div class="card" data-serie="bleach" style="position:relative">
+            <img src="recursos/img/bleach-mini.png" alt="BLEACH" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="card-placeholder" style="display:none">⚔️<span>BLEACH</span></div>
+            <div style="position:absolute;bottom:0;left:0;right:0;height:3px;background:rgba(255,255,255,0.15)">
+              <div style="width:65%;height:100%;background:var(--red);border-radius:0 2px 2px 0"></div>
+            </div>
+            <div class="card-overlay">
+              <div class="card-title">BLEACH · Ep. 8</div>
+              <div class="card-actions"><div class="card-btn primary">▶</div></div>
+              <div class="card-rating">65% completado</div>
+            </div>
+          </div>
+          <div class="card"><div class="card-placeholder">📺<span>Añade series</span></div></div>
+          <div class="card"><div class="card-placeholder">📺<span>Añade series</span></div></div>
+        </div>
+        <button class="row-btn right" onclick="scrollRow(this, 1)">&#8250;</button>
+      </div>
+    </section>
+
+  </div>
+
+  <footer>
+    <div class="footer-logo">AniHub</div>
+    <div class="footer-links">
+      <a href="#">Inicio</a>
+      <a href="#">Series</a>
+      <a href="#">Mi Lista</a>
+      <a href="login.html">Cuenta</a>
+      <a href="#">Contacto</a>
+    </div>
+    <div class="footer-copy">© 2025 AniHub · Proyecto intermodular 2DAW</div>
+  </footer>
+
+  <!-- ══ MODAL SERIE ══ -->
+  <div class="modal-backdrop" id="modal-backdrop" onclick="handleBackdropClick(event)">
+    <div class="modal" id="modal">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div class="modal-hero">
+        <img class="modal-hero-img" id="modal-hero-img" src="" alt="">
+        <div class="modal-hero-grad"></div>
+        <div class="modal-hero-info">
+          <div class="modal-hero-title" id="modal-title"></div>
+          <div class="modal-hero-actions">
+            <a href="#" class="modal-btn-play" id="modal-btn-play">▶ &nbsp;Reproducir</a>
+          </div>
+        </div>
+      </div>
+      <div class="modal-body">
+        <div class="modal-meta-row">
+          <div class="modal-meta-left">
+            <div class="modal-info-line">
+              <span class="modal-year" id="modal-year"></span>
+              <span class="modal-seasons" id="modal-seasons"></span>
+              <span class="modal-hd">HD</span>
+              <span class="modal-age">16+</span>
+            </div>
+            <p class="modal-synopsis" id="modal-synopsis"></p>
+          </div>
+          <div class="modal-meta-right" id="modal-meta-right"></div>
+        </div>
+        <div class="modal-eps-header">
+          <span class="modal-eps-title">Episodios</span>
+          <span class="modal-season-badge">Temporada 1</span>
+        </div>
+        <div id="modal-eps-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="recursos/js/datos.js"></script>
+
+  <script>
+    // Scroll de filas
+    function scrollRow(btn, direction) {
+      const row = btn.closest('.row-wrapper').querySelector('.row');
+      row.scrollBy({ left: direction * 600, behavior: 'smooth' });
+    }
+
+    // Animación de entrada de secciones
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.section, .banner-section').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(20px)';
+      el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+      observer.observe(el);
+    });
+
+    // ── MODAL ──
+    function openModal(serieId) {
+      if (typeof seriesData === 'undefined' || !seriesData[serieId]) return;
+      const serie = seriesData[serieId];
+
+      const heroImg = document.getElementById('modal-hero-img');
+      heroImg.src = serie.poster || '';
+      heroImg.style.display = 'block';
+      heroImg.onerror = () => { heroImg.style.display = 'none'; };
+
+      document.getElementById('modal-title').textContent = serie.title;
+
+      const meta = serie.metadata || '';
+      const year  = meta.match(/Año:\s*(\d+)/i);
+      const temps = meta.match(/Temporadas?:\s*(\d+)/i);
+      document.getElementById('modal-year').textContent    = year  ? year[1]  : '';
+      document.getElementById('modal-seasons').textContent = temps ? temps[1] + ' temporadas' : '';
+      document.getElementById('modal-synopsis').textContent = serie.synopsis || '';
+
+      const genMatch = meta.match(/Género[s]?:\s*([^|]+)/i);
+      document.getElementById('modal-meta-right').innerHTML = genMatch
+        ? `<div style="margin-bottom:6px"><span style="color:#555">Géneros: </span><span>${genMatch[1].trim()}</span></div>`
+        : '';
+
+      const primerEp = serie.capitulos && serie.capitulos[0];
+      document.getElementById('modal-btn-play').href = primerEp
+        ? `reproductor.html?serie=${serieId}&cap=${primerEp.id}` : '#';
+
+      const list = document.getElementById('modal-eps-list');
+      list.innerHTML = '';
+      (serie.capitulos || []).forEach(cap => {
+        const a = document.createElement('a');
+        a.className = 'modal-ep';
+        a.href = `reproductor.html?serie=${serieId}&cap=${cap.id}`;
+        const thumbContent = cap.thumbnailPath
+          ? `<img src="${cap.thumbnailPath}" alt="Cap ${cap.id}" onerror="this.onerror=null;this.parentElement.innerHTML='<div class=modal-ep-thumb-placeholder>Cap ${cap.id}</div>'">`
+          : `<div class="modal-ep-thumb-placeholder">Cap ${cap.id}</div>`;
+        a.innerHTML = `
+          <div class="modal-ep-num">${cap.id}</div>
+          <div class="modal-ep-thumb">${thumbContent}</div>
+          <div class="modal-ep-info">
+            <div class="modal-ep-title-row">
+              <span class="modal-ep-name">${cap.title}</span>
+              <span class="modal-ep-dur">${cap.duration}</span>
+            </div>
+            <p class="modal-ep-desc">${cap.description}</p>
+          </div>`;
+        list.appendChild(a);
+      });
+
+      document.body.style.overflow = 'hidden';
+      document.getElementById('modal-backdrop').classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('modal-backdrop').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function handleBackdropClick(e) {
+      if (e.target === document.getElementById('modal-backdrop')) closeModal();
+    }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+    // Click en card con data-serie → modal
+    document.addEventListener('click', e => {
+      const card = e.target.closest('[data-serie]');
+      if (card) { e.preventDefault(); openModal(card.dataset.serie); }
+    });
+  </script>
 
 </body>
 </html>
