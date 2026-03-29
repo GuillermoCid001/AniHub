@@ -126,7 +126,7 @@
 
   </div>
 
- <!-- PANEL: REGISTRO -->
+  <!-- PANEL: REGISTRO -->
   <div class="panel" id="panel-register">
 
     <span class="back-link" onclick="showPanel('login')">← Volver al login</span>
@@ -201,7 +201,7 @@
   const BACKEND_URL = 'http://localhost:3000';
   let pendingEmail = '';
 
-  //  Navegación entre paneles 
+
   function showPanel(name) {
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     document.getElementById('panel-' + name).classList.add('active');
@@ -221,7 +221,7 @@
     el.style.display = 'block';
   }
 
-  // LOGIN 
+  //  LOGIN 
   document.getElementById('btn-login').addEventListener('click', async () => {
     const username = document.getElementById('username').value.trim();
     const password = document.getElementById('password').value.trim();
@@ -256,7 +256,7 @@
         username: data.username,
         role: data.role
       }));
-      window.location.href = 'index.html';
+      window.location.href = 'perfiles.html';
 
     } catch (err) {
       showError('login-error', 'No se puede conectar con el servidor');
@@ -265,7 +265,7 @@
     }
   });
 
-  //  REGISTRO 
+  //  REGISTRO
   document.getElementById('btn-register').addEventListener('click', async () => {
     const username = document.getElementById('reg-username').value.trim();
     const email    = document.getElementById('reg-email').value.trim();
@@ -308,7 +308,7 @@
     }
   });
 
-  //  INPUTS DEL CÓDIGO (autoavance + pegar)
+  // INPUTS DEL CÓDIGO (autoavance + pegar)
   document.querySelectorAll('.code-digit').forEach((input, i, all) => {
     input.addEventListener('input', () => {
       input.value = input.value.replace(/\D/g, '');
@@ -325,7 +325,7 @@
     });
   });
 
-  // VERIFICAR CÓDIGO 
+  // VERIFICAR CÓDIGO
   document.getElementById('btn-verify').addEventListener('click', async () => {
     const code = [...document.querySelectorAll('.code-digit')].map(i => i.value).join('');
     const btn = document.getElementById('btn-verify');
@@ -359,7 +359,7 @@
         username: data.username,
         role: data.role
       }));
-      window.location.href = 'index.html';
+      window.location.href = 'perfiles.html';
 
     } catch (err) {
       showError('verify-error', 'No se puede conectar con el servidor');
@@ -400,35 +400,13 @@
   }
 
   //  Enter según panel activo 
-document.addEventListener('keydown', (e) => {
-  if (e.key !== 'Enter') return;
-
-  const active = document.querySelector('.panel.active').id;
-
-  if (active === 'panel-login') {
-    const username = document.getElementById('username');
-    const password = document.getElementById('password');
-    if (document.activeElement === username) {
-      e.preventDefault();
-      password.focus();
-    } else {
-      document.getElementById('btn-login').click();
-    }
-  }
-
-  if (active === 'panel-register') {
-    const u = document.getElementById('reg-username');
-    const em = document.getElementById('reg-email');
-    const pw = document.getElementById('reg-password');
-    if (document.activeElement === u)  { e.preventDefault(); em.focus(); }
-    else if (document.activeElement === em) { e.preventDefault(); pw.focus(); }
-    else { document.getElementById('btn-register').click(); }
-  }
-
-  if (active === 'panel-verify') {
-    document.getElementById('btn-verify').click();
-  }
-});
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter') return;
+    const active = document.querySelector('.panel.active').id;
+    if (active === 'panel-login')    document.getElementById('btn-login').click();
+    if (active === 'panel-register') document.getElementById('btn-register').click();
+    if (active === 'panel-verify')   document.getElementById('btn-verify').click();
+  });
 </script>
 
 </body>

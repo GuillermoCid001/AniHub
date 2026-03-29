@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AniHub - Perfiles</title>
+  <link rel="stylesheet" href="recursos/css/global.css">
+  <style>
+    /* ── Reset de body para esta página ── */
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #141414;
+      font-family: 'DM Sans', sans-serif;
+      overflow: hidden;
+    }
+
+    .bg-overlay {
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(229,9,20,0.08) 0%, transparent 70%),
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 39px,
+          rgba(255,255,255,0.012) 39px,
+          rgba(255,255,255,0.012) 40px
+        );
+      pointer-events: none;
+    }
+
+    /* ── Contenedor principal ── */
+    .profiles-wrapper {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .profiles-title {
+      font-size: 2em;
+      font-weight: 300;
+      color: #fff;
+      margin-bottom: 48px;
+      letter-spacing: 0.03em;
+    }
+
+    /* ── Grid de perfiles ── */
+    .profiles-grid {
+      display: flex;
+      gap: 32px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 48px;
+    }
+
+    .profile-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .profile-card:hover { transform: scale(1.08); }
+    .profile-card:hover .profile-avatar { border-color: #fff; }
+    .profile-card:hover .profile-name   { color: #fff; }
+
+    .profile-avatar {
+      width: 110px;
+      height: 110px;
+      border-radius: 6px;
+      border: 3px solid transparent;
+      transition: border-color 0.2s ease;
+      font-size: 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #222;
+      user-select: none;
+      overflow: hidden;
+    }
+
+    .profile-name {
+      font-size: 0.95em;
+      color: #aaa;
+      font-weight: 400;
+      transition: color 0.2s ease;
+      max-width: 120px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* ── Botón añadir perfil ── */
+    .profile-add .profile-avatar {
+      border: 3px dashed #444;
+      color: #666;
+      font-size: 2.5rem;
+      background: transparent;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .profile-add:hover .profile-avatar {
+      border-color: #fff;
+      color: #fff;
+    }
+
+    /* ── Botón gestionar ── */
+    .btn-manage {
+      background: transparent;
+      color: #aaa;
+      border: 1px solid #555;
+      border-radius: 4px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9em;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 10px 28px;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-manage:hover { border-color: #fff; color: #fff; }
+
+    /* ══════════════════════════════════════════
+       MODAL: Crear / Editar perfil
+    ══════════════════════════════════════════ */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      background: #1a1a1a;
+      border-radius: 8px;
+      padding: 40px;
+      width: 100%;
+      max-width: 480px;
+      position: relative;
+      animation: fadeIn 0.25s ease;
+    }
+
+    .modal h2 {
+      font-size: 1.4em;
+      font-weight: 300;
+      color: #fff;
+      margin-bottom: 28px;
+      text-align: center;
+    }
+
+    .modal .field-group { margin-bottom: 20px; }
+
+    .modal-close {
+      position: absolute;
+      top: 16px; right: 20px;
+      background: none;
+      border: none;
+      color: #888;
+      font-size: 1.4em;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .modal-close:hover { color: #fff; }
+
+    /* ── Selector de avatar ── */
+    .avatar-picker {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .avatar-option {
+      width: 100%;
+      aspect-ratio: 1;
+      border-radius: 6px;
+      background: #222;
+      border: 2px solid transparent;
+      font-size: 1.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: border-color 0.15s, transform 0.15s;
+      user-select: none;
+    }
+    .avatar-option:hover { transform: scale(1.1); border-color: #555; }
+    .avatar-option.selected { border-color: #e50914; }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .btn-modal-save {
+      flex: 1;
+      background: #e50914;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95em;
+      font-weight: 500;
+      padding: 13px;
+      cursor: pointer;
+      transition: background 0.18s;
+    }
+    .btn-modal-save:hover { background: #c40812; }
+
+    .btn-modal-cancel {
+      flex: 1;
+      background: transparent;
+      color: #aaa;
+      border: 1px solid #444;
+      border-radius: 4px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95em;
+      padding: 13px;
+      cursor: pointer;
+      transition: border-color 0.18s, color 0.18s;
+    }
+    .btn-modal-cancel:hover { border-color: #fff; color: #fff; }
+
+    .btn-modal-delete {
+      background: transparent;
+      color: #e50914;
+      border: 1px solid #e50914;
+      border-radius: 4px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.85em;
+      padding: 10px 18px;
+      cursor: pointer;
+      transition: background 0.18s;
+      margin-top: 16px;
+      width: 100%;
+    }
+    .btn-modal-delete:hover { background: rgba(229,9,20,0.12); }
+
+    /* ── Modo gestión (tachar perfiles) ── */
+    .manage-mode .profile-card:not(.profile-add) .profile-avatar::after {
+      content: '✕';
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      color: #fff;
+      pointer-events: none;
+    }
+    .manage-mode .profile-card:not(.profile-add) .profile-avatar {
+      position: relative;
+      border-color: #e50914;
+    }
+
+    .modal .form-error {
+      color: #e50914;
+      font-size: 0.82em;
+      margin-top: -12px;
+      margin-bottom: 12px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg-overlay"></div>
+
+<div class="profiles-wrapper">
+  <p class="profiles-title">¿Quién eres?</p>
+
+  <div class="profiles-grid" id="profiles-grid">
+    <!-- Se rellena con JS -->
+  </div>
+
+  <button class="btn-manage" id="btn-manage">Gestionar perfiles</button>
+</div>
+
+<!-- ══ MODAL CREAR / EDITAR ══ -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h2 id="modal-title">Nuevo perfil</h2>
+
+    <div class="field-group">
+      <label>Nombre del perfil</label>
+      <input type="text" id="modal-name" placeholder="ej. Guille" maxlength="20" />
+    </div>
+    <div class="form-error" id="modal-error"></div>
+
+    <p style="font-size:0.72em; font-weight:500; color:#888; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:10px;">Elige un avatar</p>
+    <div class="avatar-picker" id="avatar-picker"></div>
+
+    <div class="modal-actions">
+      <button class="btn-modal-cancel" onclick="closeModal()">Cancelar</button>
+      <button class="btn-modal-save" id="btn-modal-save">Guardar</button>
+    </div>
+    <button class="btn-modal-delete" id="btn-modal-delete" style="display:none;" onclick="deleteProfile()">Eliminar perfil</button>
+  </div>
+</div>
+
+<script>
+  const BACKEND_URL = 'http://localhost:3000';
+  const AVATARS = ['🐉','⚔️','🌸','🔥','🌙','⭐','🦊','🐺','🎭','🎌','💀','🌊','🧿','🐉','🎋','🏮','🦁','🐯','🌺','🎆','🤺','🧙','🦅','🐻','🌀','🗡️','🎯','🧬','🌋','🎴'];
+
+  let profiles = [];
+  let editingIndex = null;
+  let selectedAvatar = AVATARS[0];
+  let manageMode = false;
+
+  const token = localStorage.getItem('anihub_token');
+  const userRaw = localStorage.getItem('anihub_user');
+
+  // Si no hay sesión, al login
+  if (!token || !userRaw) {
+    window.location.href = 'login.html';
+  }
+
+  const currentUser = JSON.parse(userRaw);
+
+  // ── Cargar perfiles del servidor ─────────────────────────────────────────────
+  async function loadProfiles() {
+    try {
+      const res = await fetch(`${BACKEND_URL}/profiles`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (!res.ok) { window.location.href = 'login.html'; return; }
+      profiles = await res.json();
+    } catch (_) {
+      profiles = [];
+    }
+    renderProfiles();
+  }
+
+  // ── Renderizar perfiles ───────────────────────────────────────────────────────
+  function renderProfiles() {
+    const grid = document.getElementById('profiles-grid');
+    grid.innerHTML = '';
+
+    profiles.forEach((p, i) => {
+      const card = document.createElement('div');
+      card.className = 'profile-card';
+      card.innerHTML = `
+        <div class="profile-avatar" style="font-size:3rem;">${p.avatar}</div>
+        <span class="profile-name">${p.name}</span>
+      `;
+      card.addEventListener('click', () => {
+        if (manageMode) {
+          openEditModal(i);
+        } else {
+          selectProfile(p);
+        }
+      });
+      grid.appendChild(card);
+    });
+
+    // Botón añadir (solo si hay menos de 5 perfiles)
+    if (profiles.length < 5) {
+      const addCard = document.createElement('div');
+      addCard.className = 'profile-card profile-add';
+      addCard.innerHTML = `
+        <div class="profile-avatar">＋</div>
+        <span class="profile-name">Añadir perfil</span>
+      `;
+      addCard.addEventListener('click', openCreateModal);
+      grid.appendChild(addCard);
+    }
+  }
+
+  // ── Seleccionar perfil → ir al índice ────────────────────────────────────────
+  function selectProfile(profile) {
+    localStorage.setItem('anihub_profile', JSON.stringify(profile));
+    window.location.href = 'index.html';
+  }
+
+  // ── Modo gestión ──────────────────────────────────────────────────────────────
+  const btnManage = document.getElementById('btn-manage');
+  btnManage.addEventListener('click', () => {
+    manageMode = !manageMode;
+    document.querySelector('.profiles-wrapper').classList.toggle('manage-mode', manageMode);
+    btnManage.textContent = manageMode ? 'Listo' : 'Gestionar perfiles';
+    document.querySelector('.profiles-title').textContent = manageMode ? 'Gestionar perfiles' : '¿Quién eres?';
+  });
+
+  // ── Modal ─────────────────────────────────────────────────────────────────────
+  function buildAvatarPicker(selected) {
+    const picker = document.getElementById('avatar-picker');
+    picker.innerHTML = '';
+    AVATARS.forEach(emoji => {
+      const div = document.createElement('div');
+      div.className = 'avatar-option' + (emoji === selected ? ' selected' : '');
+      div.textContent = emoji;
+      div.addEventListener('click', () => {
+        document.querySelectorAll('.avatar-option').forEach(o => o.classList.remove('selected'));
+        div.classList.add('selected');
+        selectedAvatar = emoji;
+      });
+      picker.appendChild(div);
+    });
+    selectedAvatar = selected;
+  }
+
+  function openCreateModal() {
+    editingIndex = null;
+    document.getElementById('modal-title').textContent = 'Nuevo perfil';
+    document.getElementById('modal-name').value = '';
+    document.getElementById('btn-modal-delete').style.display = 'none';
+    document.getElementById('modal-error').style.display = 'none';
+    buildAvatarPicker(AVATARS[Math.floor(Math.random() * AVATARS.length)]);
+    document.getElementById('modal-overlay').classList.add('open');
+    setTimeout(() => document.getElementById('modal-name').focus(), 100);
+  }
+
+  function openEditModal(index) {
+    editingIndex = index;
+    const p = profiles[index];
+    document.getElementById('modal-title').textContent = 'Editar perfil';
+    document.getElementById('modal-name').value = p.name;
+    document.getElementById('btn-modal-delete').style.display = profiles.length > 1 ? 'block' : 'none';
+    document.getElementById('modal-error').style.display = 'none';
+    buildAvatarPicker(p.avatar);
+    document.getElementById('modal-overlay').classList.add('open');
+    setTimeout(() => document.getElementById('modal-name').focus(), 100);
+  }
+
+  function closeModal() {
+    document.getElementById('modal-overlay').classList.remove('open');
+    editingIndex = null;
+  }
+
+  // Cerrar modal al hacer clic fuera
+  document.getElementById('modal-overlay').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('modal-overlay')) closeModal();
+  });
+
+  // ── Guardar perfil ────────────────────────────────────────────────────────────
+  document.getElementById('btn-modal-save').addEventListener('click', async () => {
+    const name = document.getElementById('modal-name').value.trim();
+    const errorEl = document.getElementById('modal-error');
+
+    if (!name) {
+      errorEl.textContent = 'El nombre no puede estar vacío';
+      errorEl.style.display = 'block';
+      return;
+    }
+
+    const profileData = { name, avatar: selectedAvatar };
+
+    try {
+      let res;
+      if (editingIndex === null) {
+        // Crear
+        res = await fetch(`${BACKEND_URL}/profiles`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(profileData)
+        });
+      } else {
+        // Editar
+        res = await fetch(`${BACKEND_URL}/profiles/${editingIndex}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(profileData)
+        });
+      }
+
+      const data = await res.json();
+      if (!res.ok) {
+        errorEl.textContent = data.error || 'Error al guardar';
+        errorEl.style.display = 'block';
+        return;
+      }
+
+      profiles = data.profiles;
+      closeModal();
+      renderProfiles();
+
+    } catch (_) {
+      errorEl.textContent = 'No se puede conectar con el servidor';
+      errorEl.style.display = 'block';
+    }
+  });
+
+  // ── Eliminar perfil ───────────────────────────────────────────────────────────
+  async function deleteProfile() {
+    if (editingIndex === null) return;
+
+    try {
+      const res = await fetch(`${BACKEND_URL}/profiles/${editingIndex}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (!res.ok) return;
+
+      profiles = data.profiles;
+      closeModal();
+      renderProfiles();
+    } catch (_) {}
+  }
+
+  // ── Enter en el modal ─────────────────────────────────────────────────────────
+  document.getElementById('modal-name').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') document.getElementById('btn-modal-save').click();
+    if (e.key === 'Escape') closeModal();
+  });
+
+  // ── Init ──────────────────────────────────────────────────────────────────────
+  loadProfiles();
+</script>
+
+</body>
+</html>
