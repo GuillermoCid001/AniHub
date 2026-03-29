@@ -32,5 +32,4 @@ Abre http://localhost:3000 en el navegador.
 
 | Usuario | Contraseña | Rol     |
 |---------|------------|---------|
-| admin   | admin123   | Admin   |
-| prueba  | prueba123  | Viewer  |
+| superadmin   | admin123   | Admin   |

@@ -1,18 +1,101 @@
 <!DOCTYPE html>
 <html lang="es">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>AniHub - Login</title>
-        <link rel="stylesheet" href="recursos/css/global.css">
-    </head>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AniHub - Login</title>
+  <link rel="stylesheet" href="recursos/css/global.css">
+  <style>
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    .toggle-link {
+      color: #e50914;
+      cursor: pointer;
+      text-decoration: underline;
+      background: none;
+      border: none;
+      font-size: inherit;
+      padding: 0;
+      font-family: inherit;
+    }
+    .toggle-link:hover { color: #ff2d2d; }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 14px;
+      color: #888;
+      cursor: pointer;
+      font-size: 0.85em;
+    }
+    .back-link:hover { color: #ccc; }
+
+    .code-inputs {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin: 20px 0 8px;
+    }
+    .code-inputs input {
+      width: 44px;
+      height: 52px;
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+      border-radius: 8px;
+      border: 2px solid #333;
+      background: #1a1a1a;
+      color: #fff;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .code-inputs input:focus { border-color: #e50914; }
+
+    .verify-hint {
+      color: #888;
+      font-size: 0.85em;
+      text-align: center;
+      margin-bottom: 4px;
+    }
+    .verify-hint span { color: #ccc; }
+
+    .resend-row {
+      text-align: center;
+      margin-top: 14px;
+      font-size: 0.82em;
+      color: #666;
+    }
+    .resend-row button {
+      background: none;
+      border: none;
+      color: #e50914;
+      cursor: pointer;
+      font-size: inherit;
+      padding: 0;
+      text-decoration: underline;
+      font-family: inherit;
+    }
+    .resend-row button:disabled { color: #555; cursor: default; text-decoration: none; }
+
+    .form-error {
+      color: #e50914;
+      font-size: 0.85em;
+      margin-bottom: 12px;
+      display: none;
+    }
+  </style>
+</head>
 <body>
 
-  <div class="bg-overlay"></div>
+<div class="bg-overlay"></div>
 
-  <div class="login-card">
-    <div class="brand">AniHub</div>
-    <div class="accent-bar"></div>
+<div class="login-card">
+  <div class="brand">AniHub</div>
+  <div class="accent-bar"></div>
+
+  <!-- PANEL: LOGIN -->
+  <div class="panel active" id="panel-login">
+
     <p class="login-title">Bienvenido de vuelta</p>
 
     <div class="field-group">
@@ -25,12 +108,7 @@
       <input type="password" id="password" placeholder="••••••••" />
     </div>
 
-    <div id="login-error" style="
-        color: #e50914;
-        font-size: 0.85em;
-        margin-bottom: 12px;
-        display: none;
-    ">Usuario o contraseña incorrectos</div>
+    <div id="login-error" class="form-error">Usuario o contraseña incorrectos</div>
 
     <div class="options-row">
       <label class="remember-label">
@@ -42,75 +120,316 @@
     <button class="btn-login" id="btn-login">Iniciar sesión</button>
 
     <p class="signup-row" style="margin-top: 20px; color: #666; font-size: 0.85em; text-align:center;">
-        Acceso restringido — solo usuarios registrados
+      ¿No tienes cuenta?
+      <button class="toggle-link" onclick="showPanel('register')">Regístrate aquí</button>
     </p>
+
   </div>
 
-  <div class="bottom-bar">
-    <a href="#">Ayuda</a>
-    <a href="#">Privacidad</a>
-    <a href="#">Condiciones</a>
+ <!-- PANEL: REGISTRO -->
+  <div class="panel" id="panel-register">
+
+    <span class="back-link" onclick="showPanel('login')">← Volver al login</span>
+    <p class="login-title">Crear cuenta</p>
+
+    <div class="field-group">
+      <label>Usuario</label>
+      <input type="text" id="reg-username" placeholder="elige un nombre de usuario" />
+    </div>
+
+    <div class="field-group">
+      <label>Email</label>
+      <input type="email" id="reg-email" placeholder="tu@email.com" />
+    </div>
+
+    <div class="field-group">
+      <label>Contraseña</label>
+      <input type="password" id="reg-password" placeholder="mínimo 6 caracteres" />
+    </div>
+
+    <div id="register-error" class="form-error"></div>
+
+    <button class="btn-login" id="btn-register">Crear cuenta</button>
+
+    <p class="signup-row" style="margin-top: 20px; color: #666; font-size: 0.85em; text-align:center;">
+      ¿Ya tienes cuenta?
+      <button class="toggle-link" onclick="showPanel('login')">Inicia sesión</button>
+    </p>
+
   </div>
 
-  <script>
-    const BACKEND_URL = 'http://localhost:3000';
+  <!-- PANEL: VERIFICACIÓN EMAIL -->
+  <div class="panel" id="panel-verify">
 
-    document.getElementById('btn-login').addEventListener('click', async () => {
-        const username = document.getElementById('username').value.trim();
-        const password = document.getElementById('password').value.trim();
-        const errorEl = document.getElementById('login-error');
-        const btn = document.getElementById('btn-login');
+    <span class="back-link" onclick="showPanel('register')">← Cambiar datos</span>
+    <p class="login-title">Verificar email</p>
 
-        if (!username || !password) {
-            errorEl.textContent = 'Rellena todos los campos';
-            errorEl.style.display = 'block';
-            return;
-        }
+    <p class="verify-hint">
+      Hemos enviado un código de 6 dígitos a<br>
+      <span id="verify-email-display"></span>
+    </p>
 
-        btn.textContent = 'Entrando...';
-        btn.disabled = true;
-        errorEl.style.display = 'none';
+    <div class="code-inputs">
+      <input type="text" maxlength="1" class="code-digit" inputmode="numeric" />
+      <input type="text" maxlength="1" class="code-digit" inputmode="numeric" />
+      <input type="text" maxlength="1" class="code-digit" inputmode="numeric" />
+      <input type="text" maxlength="1" class="code-digit" inputmode="numeric" />
+      <input type="text" maxlength="1" class="code-digit" inputmode="numeric" />
+      <input type="text" maxlength="1" class="code-digit" inputmode="numeric" />
+    </div>
 
-        try {
-            const res = await fetch(`${BACKEND_URL}/login`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password })
-            });
+    <div id="verify-error" class="form-error"></div>
 
-            const data = await res.json();
+    <button class="btn-login" id="btn-verify">Verificar y entrar</button>
 
-            if (!res.ok) {
-                errorEl.textContent = data.error || 'Error al iniciar sesión';
-                errorEl.style.display = 'block';
-                btn.textContent = 'Iniciar sesión';
-                btn.disabled = false;
-                return;
-            }
+    <div class="resend-row">
+      ¿No te ha llegado?
+      <button id="btn-resend" onclick="resendCode()">Reenviar código</button>
+    </div>
 
-            localStorage.setItem('anihub_token', data.token);
-            localStorage.setItem('anihub_user', JSON.stringify({
-                username: data.username,
-                role: data.role
-            }));
+  </div>
 
-            window.location.href = 'index.html';
+</div>
 
-        } catch (err) {
-            errorEl.textContent = 'No se puede conectar con el servidor';
-            errorEl.style.display = 'block';
-            btn.textContent = 'Iniciar sesión';
-            btn.disabled = false;
-        }
+<div class="bottom-bar">
+  <a href="#">Ayuda</a>
+  <a href="#">Privacidad</a>
+  <a href="#">Condiciones</a>
+</div>
+
+<script>
+  const BACKEND_URL = 'http://localhost:3000';
+  let pendingEmail = '';
+
+  //  Navegación entre paneles 
+  function showPanel(name) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('panel-' + name).classList.add('active');
+    clearErrors();
+  }
+
+  function clearErrors() {
+    document.querySelectorAll('.form-error').forEach(el => {
+      el.textContent = '';
+      el.style.display = 'none';
     });
+  }
 
-    // Login también con Enter
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-            document.getElementById('btn-login').click();
-        }
+  function showError(id, msg) {
+    const el = document.getElementById(id);
+    el.textContent = msg;
+    el.style.display = 'block';
+  }
+
+  // LOGIN 
+  document.getElementById('btn-login').addEventListener('click', async () => {
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const btn = document.getElementById('btn-login');
+
+    if (!username || !password) {
+      showError('login-error', 'Rellena todos los campos');
+      return;
+    }
+
+    btn.textContent = 'Entrando...';
+    btn.disabled = true;
+    clearErrors();
+
+    try {
+      const res = await fetch(`${BACKEND_URL}/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        showError('login-error', data.error || 'Error al iniciar sesión');
+        btn.textContent = 'Iniciar sesión';
+        btn.disabled = false;
+        return;
+      }
+
+      localStorage.setItem('anihub_token', data.token);
+      localStorage.setItem('anihub_user', JSON.stringify({
+        username: data.username,
+        role: data.role
+      }));
+      window.location.href = 'index.html';
+
+    } catch (err) {
+      showError('login-error', 'No se puede conectar con el servidor');
+      btn.textContent = 'Iniciar sesión';
+      btn.disabled = false;
+    }
+  });
+
+  //  REGISTRO 
+  document.getElementById('btn-register').addEventListener('click', async () => {
+    const username = document.getElementById('reg-username').value.trim();
+    const email    = document.getElementById('reg-email').value.trim();
+    const password = document.getElementById('reg-password').value;
+    const btn = document.getElementById('btn-register');
+
+    if (!username || !email || !password) {
+      showError('register-error', 'Rellena todos los campos');
+      return;
+    }
+
+    btn.textContent = 'Enviando código...';
+    btn.disabled = true;
+    clearErrors();
+
+    try {
+      const res = await fetch(`${BACKEND_URL}/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, email, password })
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        showError('register-error', data.error || 'Error al registrarse');
+        btn.textContent = 'Crear cuenta';
+        btn.disabled = false;
+        return;
+      }
+
+      pendingEmail = email;
+      document.getElementById('verify-email-display').textContent = email;
+      showPanel('verify');
+      document.querySelectorAll('.code-digit')[0].focus();
+
+    } catch (err) {
+      showError('register-error', 'No se puede conectar con el servidor');
+      btn.textContent = 'Crear cuenta';
+      btn.disabled = false;
+    }
+  });
+
+  //  INPUTS DEL CÓDIGO (autoavance + pegar)
+  document.querySelectorAll('.code-digit').forEach((input, i, all) => {
+    input.addEventListener('input', () => {
+      input.value = input.value.replace(/\D/g, '');
+      if (input.value && i < all.length - 1) all[i + 1].focus();
     });
-  </script>
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Backspace' && !input.value && i > 0) all[i - 1].focus();
+    });
+    input.addEventListener('paste', (e) => {
+      e.preventDefault();
+      const pasted = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '');
+      all.forEach((inp, idx) => { inp.value = pasted[idx] || ''; });
+      all[Math.min(pasted.length, all.length - 1)].focus();
+    });
+  });
+
+  // VERIFICAR CÓDIGO 
+  document.getElementById('btn-verify').addEventListener('click', async () => {
+    const code = [...document.querySelectorAll('.code-digit')].map(i => i.value).join('');
+    const btn = document.getElementById('btn-verify');
+
+    if (code.length < 6) {
+      showError('verify-error', 'Introduce el código completo de 6 dígitos');
+      return;
+    }
+
+    btn.textContent = 'Verificando...';
+    btn.disabled = true;
+    clearErrors();
+
+    try {
+      const res = await fetch(`${BACKEND_URL}/verify-email`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: pendingEmail, code })
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        showError('verify-error', data.error || 'Código incorrecto');
+        btn.textContent = 'Verificar y entrar';
+        btn.disabled = false;
+        return;
+      }
+
+      localStorage.setItem('anihub_token', data.token);
+      localStorage.setItem('anihub_user', JSON.stringify({
+        username: data.username,
+        role: data.role
+      }));
+      window.location.href = 'index.html';
+
+    } catch (err) {
+      showError('verify-error', 'No se puede conectar con el servidor');
+      btn.textContent = 'Verificar y entrar';
+      btn.disabled = false;
+    }
+  });
+
+  //  REENVIAR CÓDIGO 
+  async function resendCode() {
+    const btn = document.getElementById('btn-resend');
+    btn.disabled = true;
+
+    try {
+      await fetch(`${BACKEND_URL}/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: document.getElementById('reg-username').value.trim(),
+          email: pendingEmail,
+          password: document.getElementById('reg-password').value
+        })
+      });
+    } catch (_) {}
+
+    let secs = 30;
+    btn.textContent = `Reenviar (${secs}s)`;
+    const interval = setInterval(() => {
+      secs--;
+      if (secs > 0) {
+        btn.textContent = `Reenviar (${secs}s)`;
+      } else {
+        clearInterval(interval);
+        btn.textContent = 'Reenviar código';
+        btn.disabled = false;
+      }
+    }, 1000);
+  }
+
+  //  Enter según panel activo 
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Enter') return;
+
+  const active = document.querySelector('.panel.active').id;
+
+  if (active === 'panel-login') {
+    const username = document.getElementById('username');
+    const password = document.getElementById('password');
+    if (document.activeElement === username) {
+      e.preventDefault();
+      password.focus();
+    } else {
+      document.getElementById('btn-login').click();
+    }
+  }
+
+  if (active === 'panel-register') {
+    const u = document.getElementById('reg-username');
+    const em = document.getElementById('reg-email');
+    const pw = document.getElementById('reg-password');
+    if (document.activeElement === u)  { e.preventDefault(); em.focus(); }
+    else if (document.activeElement === em) { e.preventDefault(); pw.focus(); }
+    else { document.getElementById('btn-register').click(); }
+  }
+
+  if (active === 'panel-verify') {
+    document.getElementById('btn-verify').click();
+  }
+});
+</script>
 
 </body>
 </html>
