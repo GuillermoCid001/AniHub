@@ -6,7 +6,6 @@
   <title>AniHub - Perfiles</title>
   <link rel="stylesheet" href="recursos/css/global.css">
   <style>
-    /* ── Reset de body para esta página ── */
     body {
       min-height: 100vh;
       display: flex;
@@ -24,21 +23,17 @@
       background:
         radial-gradient(ellipse 80% 60% at 50% 0%, rgba(229,9,20,0.08) 0%, transparent 70%),
         repeating-linear-gradient(
-          0deg,
-          transparent,
-          transparent 39px,
-          rgba(255,255,255,0.012) 39px,
-          rgba(255,255,255,0.012) 40px
+          0deg, transparent, transparent 39px,
+          rgba(255,255,255,0.012) 39px, rgba(255,255,255,0.012) 40px
         );
       pointer-events: none;
     }
 
-    /* ── Contenedor principal ── */
     .profiles-wrapper {
       position: relative;
       z-index: 1;
       text-align: center;
-      animation: fadeIn 0.4s ease;
+      animation: fadeIn 0.5s ease;
     }
 
     @keyframes fadeIn {
@@ -52,9 +47,9 @@
       color: #fff;
       margin-bottom: 48px;
       letter-spacing: 0.03em;
+      transition: opacity 0.3s ease;
     }
 
-    /* ── Grid de perfiles ── */
     .profiles-grid {
       display: flex;
       gap: 32px;
@@ -88,7 +83,6 @@
       justify-content: center;
       background: #222;
       user-select: none;
-      overflow: hidden;
     }
 
     .profile-name {
@@ -102,7 +96,6 @@
       text-overflow: ellipsis;
     }
 
-    /* ── Botón añadir perfil ── */
     .profile-add .profile-avatar {
       border: 3px dashed #444;
       color: #666;
@@ -110,13 +103,8 @@
       background: transparent;
       transition: border-color 0.2s, color 0.2s;
     }
+    .profile-add:hover .profile-avatar { border-color: #fff; color: #fff; }
 
-    .profile-add:hover .profile-avatar {
-      border-color: #fff;
-      color: #fff;
-    }
-
-    /* ── Botón gestionar ── */
     .btn-manage {
       background: transparent;
       color: #aaa;
@@ -129,13 +117,38 @@
       text-transform: uppercase;
       padding: 10px 28px;
       cursor: pointer;
-      transition: border-color 0.2s, color 0.2s;
+      transition: border-color 0.2s, color 0.2s, opacity 0.3s;
     }
     .btn-manage:hover { border-color: #fff; color: #fff; }
 
-    /* ══════════════════════════════════════════
-       MODAL: Crear / Editar perfil
-    ══════════════════════════════════════════ */
+    /* Animación de zoom */
+    .zoom-overlay {
+      position: fixed;
+      inset: 0;
+      background: #141414;
+      z-index: 500;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+    .zoom-overlay.active { opacity: 1; pointer-events: all; }
+
+    /* Avatar clonado que hace zoom */
+    .avatar-zoom {
+      position: fixed;
+      z-index: 600;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      background: #222;
+      pointer-events: none;
+      /* La posición y tamaño se setean por JS */
+      transition: all 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* MODAL */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -175,11 +188,9 @@
       color: #888;
       font-size: 1.4em;
       cursor: pointer;
-      line-height: 1;
     }
     .modal-close:hover { color: #fff; }
 
-    /* ── Selector de avatar ── */
     .avatar-picker {
       display: grid;
       grid-template-columns: repeat(6, 1fr);
@@ -204,11 +215,7 @@
     .avatar-option:hover { transform: scale(1.1); border-color: #555; }
     .avatar-option.selected { border-color: #e50914; }
 
-    .modal-actions {
-      display: flex;
-      gap: 12px;
-      margin-top: 8px;
-    }
+    .modal-actions { display: flex; gap: 12px; margin-top: 8px; }
 
     .btn-modal-save {
       flex: 1;
@@ -254,26 +261,12 @@
     }
     .btn-modal-delete:hover { background: rgba(229,9,20,0.12); }
 
-    /* ── Modo gestión (tachar perfiles) ── */
-    .manage-mode .profile-card:not(.profile-add) .profile-avatar::after {
-      content: '✕';
-      position: absolute;
-      inset: 0;
-      background: rgba(0,0,0,0.55);
-      border-radius: 4px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2rem;
-      color: #fff;
-      pointer-events: none;
-    }
     .manage-mode .profile-card:not(.profile-add) .profile-avatar {
       position: relative;
       border-color: #e50914;
     }
 
-    .modal .form-error {
+    .form-error {
       color: #e50914;
       font-size: 0.82em;
       margin-top: -12px;
@@ -286,17 +279,18 @@
 
 <div class="bg-overlay"></div>
 
-<div class="profiles-wrapper">
-  <p class="profiles-title">¿Quién eres?</p>
+<!-- Capa negra para el fade final -->
+<div class="zoom-overlay" id="zoom-overlay"></div>
 
-  <div class="profiles-grid" id="profiles-grid">
-    <!-- Se rellena con JS -->
-  </div>
+<div class="profiles-wrapper" id="profiles-wrapper">
+  <p class="profiles-title" id="profiles-title">¿Quién eres?</p>
+
+  <div class="profiles-grid" id="profiles-grid"></div>
 
   <button class="btn-manage" id="btn-manage">Gestionar perfiles</button>
 </div>
 
-<!-- ══ MODAL CREAR / EDITAR ══ -->
+<!-- MODAL -->
 <div class="modal-overlay" id="modal-overlay">
   <div class="modal">
     <button class="modal-close" onclick="closeModal()">✕</button>
@@ -308,7 +302,7 @@
     </div>
     <div class="form-error" id="modal-error"></div>
 
-    <p style="font-size:0.72em; font-weight:500; color:#888; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:10px;">Elige un avatar</p>
+    <p style="font-size:0.72em;font-weight:500;color:#888;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;">Elige un avatar</p>
     <div class="avatar-picker" id="avatar-picker"></div>
 
     <div class="modal-actions">
@@ -321,24 +315,18 @@
 
 <script>
   const BACKEND_URL = 'http://localhost:3000';
-  const AVATARS = ['🐉','⚔️','🌸','🔥','🌙','⭐','🦊','🐺','🎭','🎌','💀','🌊','🧿','🐉','🎋','🏮','🦁','🐯','🌺','🎆','🤺','🧙','🦅','🐻','🌀','🗡️','🎯','🧬','🌋','🎴'];
+  const AVATARS = ['🐉','⚔️','🌸','🔥','🌙','⭐','🦊','🐺','🎭','🎌','💀','🌊','🧿','🎋','🏮','🦁','🐯','🌺','🎆','🤺','🧙','🦅','🐻','🌀','🗡️','🎯','🧬','🌋','🎴','🎪'];
 
   let profiles = [];
   let editingIndex = null;
   let selectedAvatar = AVATARS[0];
   let manageMode = false;
 
-  const token = localStorage.getItem('anihub_token');
-  const userRaw = localStorage.getItem('anihub_user');
+  const token    = localStorage.getItem('anihub_token');
+  const userRaw  = localStorage.getItem('anihub_user');
+  if (!token || !userRaw) window.location.href = 'login.html';
 
-  // Si no hay sesión, al login
-  if (!token || !userRaw) {
-    window.location.href = 'login.html';
-  }
-
-  const currentUser = JSON.parse(userRaw);
-
-  // ── Cargar perfiles del servidor ─────────────────────────────────────────────
+  // Cargar perfiles 
   async function loadProfiles() {
     try {
       const res = await fetch(`${BACKEND_URL}/profiles`, {
@@ -346,13 +334,11 @@
       });
       if (!res.ok) { window.location.href = 'login.html'; return; }
       profiles = await res.json();
-    } catch (_) {
-      profiles = [];
-    }
+    } catch (_) { profiles = []; }
     renderProfiles();
   }
 
-  // ── Renderizar perfiles ───────────────────────────────────────────────────────
+  //  Renderizar 
   function renderProfiles() {
     const grid = document.getElementById('profiles-grid');
     grid.innerHTML = '';
@@ -361,20 +347,16 @@
       const card = document.createElement('div');
       card.className = 'profile-card';
       card.innerHTML = `
-        <div class="profile-avatar" style="font-size:3rem;">${p.avatar}</div>
+        <div class="profile-avatar">${p.avatar}</div>
         <span class="profile-name">${p.name}</span>
       `;
       card.addEventListener('click', () => {
-        if (manageMode) {
-          openEditModal(i);
-        } else {
-          selectProfile(p);
-        }
+        if (manageMode) openEditModal(i);
+        else            animateAndEnter(p, card.querySelector('.profile-avatar'));
       });
       grid.appendChild(card);
     });
 
-    // Botón añadir (solo si hay menos de 5 perfiles)
     if (profiles.length < 5) {
       const addCard = document.createElement('div');
       addCard.className = 'profile-card profile-add';
@@ -387,22 +369,73 @@
     }
   }
 
-  // ── Seleccionar perfil → ir al índice ────────────────────────────────────────
-  function selectProfile(profile) {
+  //  ANIMACIÓN ZOOM + FADE 
+  function animateAndEnter(profile, avatarEl) {
+    // Guardar perfil seleccionado
     localStorage.setItem('anihub_profile', JSON.stringify(profile));
-    window.location.href = 'index.html';
+
+    const rect = avatarEl.getBoundingClientRect();
+    const vw   = window.innerWidth;
+    const vh   = window.innerHeight;
+    const size = Math.max(vw, vh) * 2; // tamaño final enorme
+
+    // 1. Clonar el avatar en posición exacta
+    const clone = document.createElement('div');
+    clone.className = 'avatar-zoom';
+    clone.textContent = profile.avatar;
+    clone.style.cssText = `
+      left: ${rect.left}px;
+      top: ${rect.top}px;
+      width: ${rect.width}px;
+      height: ${rect.height}px;
+      font-size: 3rem;
+      opacity: 1;
+    `;
+    document.body.appendChild(clone);
+
+    // 2. Desvanecer todo lo demás
+    const wrapper = document.getElementById('profiles-wrapper');
+    wrapper.style.transition = 'opacity 0.35s ease';
+    wrapper.style.opacity = '0';
+
+    // 3. Pequeña pausa para que el browser pinte el estado inicial del clone
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        // Zoom: mover al centro y agrandar
+        const finalLeft = vw / 2 - size / 2;
+        const finalTop  = vh / 2 - size / 2;
+
+        clone.style.left      = `${finalLeft}px`;
+        clone.style.top       = `${finalTop}px`;
+        clone.style.width     = `${size}px`;
+        clone.style.height    = `${size}px`;
+        clone.style.fontSize  = `${size * 0.4}px`;
+        clone.style.opacity   = '0';
+        clone.style.background = '#141414';
+
+        // 4. Fade a negro en paralelo
+        setTimeout(() => {
+          document.getElementById('zoom-overlay').classList.add('active');
+        }, 250);
+
+        // 5. Navegar cuando termina todo
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 750);
+      });
+    });
   }
 
-  // ── Modo gestión ──────────────────────────────────────────────────────────────
+  //  Modo gestión 
   const btnManage = document.getElementById('btn-manage');
   btnManage.addEventListener('click', () => {
     manageMode = !manageMode;
-    document.querySelector('.profiles-wrapper').classList.toggle('manage-mode', manageMode);
+    document.getElementById('profiles-wrapper').classList.toggle('manage-mode', manageMode);
     btnManage.textContent = manageMode ? 'Listo' : 'Gestionar perfiles';
-    document.querySelector('.profiles-title').textContent = manageMode ? 'Gestionar perfiles' : '¿Quién eres?';
+    document.getElementById('profiles-title').textContent = manageMode ? 'Gestionar perfiles' : '¿Quién eres?';
   });
 
-  // ── Modal ─────────────────────────────────────────────────────────────────────
+  //  Modal 
   function buildAvatarPicker(selected) {
     const picker = document.getElementById('avatar-picker');
     picker.innerHTML = '';
@@ -448,14 +481,12 @@
     editingIndex = null;
   }
 
-  // Cerrar modal al hacer clic fuera
   document.getElementById('modal-overlay').addEventListener('click', (e) => {
     if (e.target === document.getElementById('modal-overlay')) closeModal();
   });
 
-  // ── Guardar perfil ────────────────────────────────────────────────────────────
   document.getElementById('btn-modal-save').addEventListener('click', async () => {
-    const name = document.getElementById('modal-name').value.trim();
+    const name    = document.getElementById('modal-name').value.trim();
     const errorEl = document.getElementById('modal-error');
 
     if (!name) {
@@ -464,53 +495,34 @@
       return;
     }
 
-    const profileData = { name, avatar: selectedAvatar };
-
     try {
       let res;
       if (editingIndex === null) {
-        // Crear
         res = await fetch(`${BACKEND_URL}/profiles`, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify(profileData)
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ name, avatar: selectedAvatar })
         });
       } else {
-        // Editar
         res = await fetch(`${BACKEND_URL}/profiles/${editingIndex}`, {
           method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify(profileData)
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ name, avatar: selectedAvatar })
         });
       }
-
       const data = await res.json();
-      if (!res.ok) {
-        errorEl.textContent = data.error || 'Error al guardar';
-        errorEl.style.display = 'block';
-        return;
-      }
-
+      if (!res.ok) { errorEl.textContent = data.error || 'Error al guardar'; errorEl.style.display = 'block'; return; }
       profiles = data.profiles;
       closeModal();
       renderProfiles();
-
     } catch (_) {
       errorEl.textContent = 'No se puede conectar con el servidor';
       errorEl.style.display = 'block';
     }
   });
 
-  // ── Eliminar perfil ───────────────────────────────────────────────────────────
   async function deleteProfile() {
     if (editingIndex === null) return;
-
     try {
       const res = await fetch(`${BACKEND_URL}/profiles/${editingIndex}`, {
         method: 'DELETE',
@@ -518,20 +530,17 @@
       });
       const data = await res.json();
       if (!res.ok) return;
-
       profiles = data.profiles;
       closeModal();
       renderProfiles();
     } catch (_) {}
   }
 
-  // ── Enter en el modal ─────────────────────────────────────────────────────────
   document.getElementById('modal-name').addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') document.getElementById('btn-modal-save').click();
+    if (e.key === 'Enter')  document.getElementById('btn-modal-save').click();
     if (e.key === 'Escape') closeModal();
   });
 
-  // ── Init ──────────────────────────────────────────────────────────────────────
   loadProfiles();
 </script>
 

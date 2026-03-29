@@ -6,35 +6,45 @@
     <title>AniHub</title>
     <link rel="stylesheet" href="recursos/css/global.css">
     <script src="recursos/js/auth.js"></script>
+    <style>
+      /* Fade de entrada desde negro */
+      body {
+        animation: fadeInPage 0.6s ease forwards;
+      }
+      @keyframes fadeInPage {
+        from { opacity: 0; }
+        to   { opacity: 1; }
+      }
+    </style>
 </head>
 <body>
     <div id="user-info" style="
-    position: fixed;
-    top: 15px;
-    right: 20px;
-    z-index: 999;
-    display: flex;
-    align-items: center;
-"></div>
+        position: fixed;
+        top: 15px;
+        right: 20px;
+        z-index: 999;
+        display: flex;
+        align-items: center;
+    "></div>
 
-<script>
-    verificarToken().then(user => {
-        if (user) mostrarUsuario();
-    });
-</script>
+    <script>
+        verificarToken().then(user => {
+            if (user) mostrarUsuario();
+        });
+    </script>
 
     <div class="header">AniHub</div>
 
     <h2>Frikadas</h2>
-    
-  <div class="series-grid">
+
+    <div class="series-grid">
         <div class="serie-item">
             <a href="serie.html?id=bleach">
                 <img src="recursos/img/bleach-mini.png" alt="Póster de la serie BLEACH" class="serie-poster">
                 <div class="serie-title">BLEACH</div>
             </a>
         </div>
-         <div class="serie-item">
+        <div class="serie-item">
             <a href="serie.html?id=dragonball">
                 <img src="recursos/img/db-mini.jpg" alt="Póster de la serie Dragon Ball" class="serie-poster">
                 <div class="serie-title">DRAGON BALL</div>
@@ -44,4 +54,3 @@
 
 </body>
 </html>
-
