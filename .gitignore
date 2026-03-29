@@ -14,3 +14,6 @@ backend/node_modules/
 # Variables de entorno
 .env
 backend/.env
+
+# Datos de usuarios
+backend/users.json
