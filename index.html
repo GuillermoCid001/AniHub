@@ -31,7 +31,6 @@
       background: var(--dark) !important;
       color: var(--text) !important;
       font-family: 'Inter', sans-serif !important;
-      /* Resetear lo que rompe el global.css del login */
       display: block !important;
       align-items: unset !important;
       justify-content: unset !important;
@@ -49,7 +48,6 @@
       to { opacity: 1; }
     }
 
-    /* ── NAVBAR ── */
     nav {
       position: fixed;
       top: 0; left: 0; right: 0;
@@ -118,7 +116,6 @@
     }
     .btn-login:hover { background: var(--red-hover); }
 
-    /* ── HERO ── */
     .hero {
       position: relative;
       height: 75vh;
@@ -140,7 +137,6 @@
       background-color: #0d0d0d;
     }
 
-    /* Patrón de fondo animado cuando no hay imagen */
     .hero-bg::before {
       content: '';
       position: absolute;
@@ -155,7 +151,6 @@
       to { opacity: 1; }
     }
 
-    /* Letras kanji decorativas */
     .hero-bg::after {
       content: '漫画 • アニメ • 趣味';
       position: absolute;
@@ -266,7 +261,6 @@
     .btn-info:hover { background: rgba(109,109,110,0.5); }
     .btn-info svg { width: 20px; height: 20px; }
 
-    /* ── SECCIONES TIPO NETFLIX ── */
     .sections {
       padding: 0 0 60px;
     }
@@ -304,7 +298,6 @@
       transform: translateX(0);
     }
 
-    /* Fila horizontal con scroll */
     .row-wrapper {
       position: relative;
     }
@@ -344,7 +337,6 @@
     .row-wrapper:hover .row-btn { opacity: 1; }
     .row-btn:hover { background: rgba(229,9,20,0.85); }
 
-    /* ── CARD ── */
     .card {
       flex: 0 0 calc(20% - 7px);
       min-width: 160px;
@@ -372,7 +364,6 @@
       background: #222;
     }
 
-    /* Placeholder cuando no hay imagen */
     .card-placeholder {
       width: 100%;
       aspect-ratio: 2/3;
@@ -455,7 +446,6 @@
       border-radius: 2px;
     }
 
-    /* ── BANNER DESTACADO ── */
     .banner-section {
       margin: 24px 4% 48px;
       border-radius: 8px;
@@ -507,7 +497,6 @@
       pointer-events: none;
     }
 
-    /* ── FOOTER ── */
     footer {
       padding: 40px 4% 20px;
       border-top: 1px solid rgba(255,255,255,0.06);
@@ -537,7 +526,6 @@
       color: rgba(255,255,255,0.25);
     }
 
-    /* ── RESPONSIVE ── */
     @media (max-width: 768px) {
       .nav-links { display: none; }
       .hero { height: 70vh; padding-bottom: 10%; }
@@ -549,9 +537,6 @@
       .card { flex: 0 0 calc(50% - 4px); min-width: 100px; }
     }
 
-    /* ══════════════════════════════════════
-       MODAL SERIE — estilo Netflix
-    ══════════════════════════════════════ */
     .modal-backdrop {
       position: fixed;
       inset: 0;
@@ -586,7 +571,6 @@
       transform: translateY(0) scale(1);
     }
 
-    /* Cabecera con imagen grande */
     .modal-hero {
       position: relative;
       width: 100%;
@@ -608,7 +592,6 @@
                   linear-gradient(to right, rgba(0,0,0,0.4) 0%, transparent 60%);
     }
 
-    /* Logo / título encima de la imagen */
     .modal-hero-info {
       position: absolute;
       bottom: 0;
@@ -664,7 +647,6 @@
     }
     .modal-btn-list:hover { background: rgba(109,109,110,0.5); }
 
-    /* Botón cerrar */
     .modal-close {
       position: absolute;
       top: 14px;
@@ -685,7 +667,6 @@
     }
     .modal-close:hover { background: #333; }
 
-    /* Cuerpo del modal */
     .modal-body {
       padding: 20px 32px 32px;
     }
@@ -734,7 +715,6 @@
       color: #d2d2d2;
     }
 
-    /* Sección de episodios */
     .modal-eps-header {
       display: flex;
       align-items: center;
@@ -757,7 +737,6 @@
       border: 1px solid rgba(255,255,255,0.15);
     }
 
-    /* Item de episodio */
     .modal-ep {
       display: flex;
       align-items: center;
@@ -806,7 +785,6 @@
       color: rgba(255,255,255,0.2);
       font-size: 0.7rem;
     }
-    /* Play overlay en thumb */
     .modal-ep-thumb::after {
       content: '▶';
       position: absolute;
@@ -864,7 +842,6 @@
 </head>
 <body>
 
-  <!-- NAVBAR -->
   <nav id="navbar">
     <a href="index.html" class="nav-logo">AniHub</a>
 
@@ -883,13 +860,11 @@
   </nav>
 
   <script>
-    // Navbar scroll
     const navbar = document.getElementById('navbar');
     window.addEventListener('scroll', () => {
       navbar.classList.toggle('scrolled', window.scrollY > 50);
     });
 
-    // Auth
     if (typeof verificarToken === 'function') {
       verificarToken().then(user => {
         if (user && typeof mostrarUsuario === 'function') mostrarUsuario();
@@ -904,7 +879,6 @@
     }
   </script>
 
-  <!-- HERO -->
   <section class="hero">
     <div class="hero-bg"></div>
     <div class="hero-content">
@@ -932,7 +906,6 @@
     </div>
   </section>
 
-  <!-- SECCIONES -->
   <div class="sections">
 
     <section class="section">
@@ -1087,7 +1060,6 @@
     <div class="footer-copy">© 2025 AniHub · Proyecto intermodular 2DAW</div>
   </footer>
 
-  <!-- ══ MODAL SERIE ══ -->
   <div class="modal-backdrop" id="modal-backdrop" onclick="handleBackdropClick(event)">
     <div class="modal" id="modal">
       <button class="modal-close" onclick="closeModal()">✕</button>
@@ -1126,13 +1098,11 @@
   <script src="recursos/js/datos.js"></script>
 
   <script>
-    // Scroll de filas
     function scrollRow(btn, direction) {
       const row = btn.closest('.row-wrapper').querySelector('.row');
       row.scrollBy({ left: direction * 600, behavior: 'smooth' });
     }
 
-    // Animación de entrada de secciones
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -1148,7 +1118,6 @@
       observer.observe(el);
     });
 
-    // ── MODAL ──
     function openModal(serieId) {
       if (typeof seriesData === 'undefined' || !seriesData[serieId]) return;
       const serie = seriesData[serieId];
@@ -1213,7 +1182,6 @@
 
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
-    // Click en card con data-serie → modal
     document.addEventListener('click', e => {
       const card = e.target.closest('[data-serie]');
       if (card) { e.preventDefault(); openModal(card.dataset.serie); }

@@ -111,7 +111,6 @@
   <div class="brand">AniHub</div>
   <div class="accent-bar"></div>
 
-  <!-- PANEL: LOGIN -->
   <div class="panel active" id="panel-login">
 
     <p class="login-title">Bienvenido de vuelta</p>
@@ -156,7 +155,6 @@
 
   </div>
 
-  <!-- PANEL: REGISTRO -->
   <div class="panel" id="panel-register">
 
     <span class="back-link" onclick="showPanel('login')">← Volver al login</span>
@@ -200,7 +198,6 @@
 
   </div>
 
-  <!-- PANEL: VERIFICACIÓN EMAIL -->
   <div class="panel" id="panel-verify">
 
     <span class="back-link" onclick="showPanel('register')">← Cambiar datos</span>
@@ -263,7 +260,6 @@
     el.style.display = 'block';
   }
 
-  //  LOGIN 
   document.getElementById('btn-login').addEventListener('click', async () => {
     const username = document.getElementById('username').value.trim();
     const password = document.getElementById('password').value.trim();
@@ -307,7 +303,6 @@
     }
   });
 
-  //  REGISTRO
   document.getElementById('btn-register').addEventListener('click', async () => {
     const username = document.getElementById('reg-username').value.trim();
     const email    = document.getElementById('reg-email').value.trim();
@@ -350,7 +345,6 @@
     }
   });
 
-  // INPUTS DEL CÓDIGO (autoavance + pegar)
   document.querySelectorAll('.code-digit').forEach((input, i, all) => {
     input.addEventListener('input', () => {
       input.value = input.value.replace(/\D/g, '');
@@ -367,7 +361,6 @@
     });
   });
 
-  // VERIFICAR CÓDIGO
   document.getElementById('btn-verify').addEventListener('click', async () => {
     const code = [...document.querySelectorAll('.code-digit')].map(i => i.value).join('');
     const btn = document.getElementById('btn-verify');
@@ -410,7 +403,6 @@
     }
   });
 
-  //  REENVIAR CÓDIGO 
   async function resendCode() {
     const btn = document.getElementById('btn-resend');
     btn.disabled = true;
@@ -441,7 +433,6 @@
     }, 1000);
   }
 
-  //  Enter según panel activo 
   document.addEventListener('keydown', (e) => {
     if (e.key !== 'Enter') return;
     const active = document.querySelector('.panel.active').id;

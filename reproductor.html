@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title id="page-title">Reproduciendo...</title>
+  <title id="page-title">Reproduciendo</title>
   <link rel="stylesheet" href="recursos/css/global.css">
   <script src="recursos/js/auth.js"></script>
   <style>
@@ -20,7 +20,6 @@
       padding: 0 !important;
     }
 
-    /* Vídeo a pantalla completa real */
     .player-wrap {
       position: fixed;
       inset: 0;
@@ -35,11 +34,9 @@
       height: 100%;
       display: block;
       background: #000;
-      /* Usar object-fit cover para llenar como Netflix */
       object-fit: contain;
     }
 
-    /* ── Controles superpuestos (aparecen al mover el ratón) ── */
     .player-ui {
       position: fixed;
       inset: 0;
@@ -50,7 +47,6 @@
     }
     .player-ui.visible { opacity: 1; pointer-events: auto; }
 
-    /* Gradiente top */
     .ui-top {
       position: absolute;
       top: 0; left: 0; right: 0;
@@ -88,7 +84,6 @@
     }
     .ui-title strong { display: block; font-size: 1rem; color: #fff; }
 
-    /* Gradiente bottom */
     .ui-bottom {
       position: absolute;
       bottom: 0; left: 0; right: 0;
@@ -101,7 +96,6 @@
       gap: 12px;
     }
 
-    /* Barra de progreso */
     .progress-wrap {
       display: flex;
       align-items: center;
@@ -149,7 +143,6 @@
       text-align: right;
     }
 
-    /* Botones de control */
     .controls-row {
       display: flex;
       align-items: center;
@@ -177,11 +170,8 @@
     .ctrl-btn:hover { opacity: 1; transform: scale(1.1); }
     .ctrl-btn svg { width: 26px; height: 26px; }
     .ctrl-btn.sm svg { width: 20px; height: 20px; }
-
-    /* Botón play/pausa grande */
     .ctrl-btn.play svg { width: 32px; height: 32px; }
 
-    /* Título episodio centrado */
     .controls-center {
       position: absolute;
       left: 50%;
@@ -193,7 +183,6 @@
       white-space: nowrap;
     }
 
-    /* Botón "Omitir intro" estilo Netflix */
     .skip-intro {
       position: fixed;
       bottom: 160px;
@@ -214,7 +203,6 @@
     .skip-intro:hover { background: rgba(50,50,50,0.9); }
     .skip-intro.show { display: block; }
 
-    /* Volumen slider mini */
     .volume-wrap {
       display: flex;
       align-items: center;
@@ -237,17 +225,14 @@
 </head>
 <body>
 
-  <!-- Vídeo -->
   <div class="player-wrap">
     <video id="video-player" autoplay>
       <source src=" " type="video/mp4" id="video-source">
     </video>
   </div>
 
-  <!-- UI superpuesta -->
   <div class="player-ui" id="player-ui">
 
-    <!-- Top: volver + título -->
     <div class="ui-top">
       <a href="#" class="ui-back" id="ui-back-btn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -260,10 +245,8 @@
       </div>
     </div>
 
-    <!-- Botón "Omitir intro" -->
     <button class="skip-intro" id="skip-intro-btn">Omitir introducción</button>
 
-    <!-- Bottom: progreso + controles -->
     <div class="ui-bottom">
       <div class="progress-wrap">
         <div class="progress-bar" id="progress-bar">
@@ -274,26 +257,22 @@
 
       <div class="controls-row">
         <div class="controls-left">
-          <!-- Play/Pause -->
           <button class="ctrl-btn play" id="btn-play-pause" title="Play/Pausa">
             <svg id="icon-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
             <svg id="icon-pause" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
           </button>
-          <!-- Retroceder 10s -->
           <button class="ctrl-btn sm" id="btn-back10" title="Retroceder 10s">
             <svg viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 5V2L8 6l4 4V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>
               <text x="8.5" y="14.5" font-size="5" fill="currentColor" font-family="Arial" font-weight="bold">10</text>
             </svg>
           </button>
-          <!-- Adelantar 10s -->
           <button class="ctrl-btn sm" id="btn-fwd10" title="Adelantar 10s">
             <svg viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 5V2l4 4-4 4V7c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6h2c0 4.42-3.58 8-8 8s-8-3.58-8-8 3.58-8 8-8z"/>
               <text x="8.5" y="14.5" font-size="5" fill="currentColor" font-family="Arial" font-weight="bold">10</text>
             </svg>
           </button>
-          <!-- Volumen -->
           <div class="volume-wrap">
             <button class="ctrl-btn sm" id="btn-mute" title="Silenciar">
               <svg id="icon-vol" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
@@ -302,15 +281,12 @@
           </div>
         </div>
 
-        <!-- Título episodio centrado -->
         <div class="controls-center" id="ctrl-ep-label"></div>
 
         <div class="controls-right">
-          <!-- Siguiente episodio -->
           <button class="ctrl-btn sm" id="btn-next" title="Siguiente episodio" style="display:none">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zm2-8.14L11.03 12 8 14.14V9.86zM16 6h2v12h-2z"/></svg>
           </button>
-          <!-- Pantalla completa -->
           <button class="ctrl-btn sm" id="btn-fullscreen" title="Pantalla completa">
             <svg id="icon-expand" viewBox="0 0 24 24" fill="currentColor"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
             <svg id="icon-compress" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/></svg>
@@ -333,7 +309,6 @@
       const ui      = document.getElementById('player-ui');
       let hideTimer;
 
-      // ── Mostrar/ocultar UI con el ratón ──
       const showUI = () => {
         ui.classList.add('visible');
         document.body.style.cursor = '';
@@ -349,7 +324,6 @@
       document.addEventListener('click', showUI);
       showUI();
 
-      // ── Datos de la serie ──
       if (serieId && typeof seriesData !== 'undefined' && seriesData[serieId]) {
         const serie = seriesData[serieId];
         const cap   = serie.capitulos.find(c => c.id === capId);
@@ -359,10 +333,8 @@
         document.getElementById('ctrl-ep-label').textContent  = cap ? `${serie.title}  ·  E${cap.id}` : '';
         document.getElementById('page-title').textContent     = cap ? `${serie.title} – E${cap.id}` : 'Reproduciendo...';
 
-        // Botón "volver a la serie"
         document.getElementById('ui-back-btn').href = `index.html`;
 
-        // Siguiente episodio
         const nextCap = serie.capitulos.find(c => c.id === capId + 1);
         const btnNext = document.getElementById('btn-next');
         if (nextCap) {
@@ -373,7 +345,6 @@
         }
       }
 
-      // ── Controles de vídeo ──
       const fill     = document.getElementById('progress-fill');
       const bar      = document.getElementById('progress-bar');
       const timeEl   = document.getElementById('time-label');
@@ -392,13 +363,11 @@
         fill.style.width = pct + '%';
         timeEl.textContent = `${fmt(video.currentTime)} / ${fmt(video.duration)}`;
 
-        // Omitir intro: mostrar en los primeros 90s
         const skipBtn = document.getElementById('skip-intro-btn');
         if (video.currentTime < 90 && video.currentTime > 2) skipBtn.classList.add('show');
         else skipBtn.classList.remove('show');
       });
 
-      // Play/Pause
       const togglePlay = () => {
         if (video.paused) { video.play(); iconPlay.style.display='none'; iconPause.style.display=''; }
         else              { video.pause(); iconPlay.style.display=''; iconPause.style.display='none'; }
@@ -408,22 +377,17 @@
       video.addEventListener('play',  () => { iconPlay.style.display='none'; iconPause.style.display=''; });
       video.addEventListener('pause', () => { iconPlay.style.display=''; iconPause.style.display='none'; });
 
-      // Seek en barra
       bar.addEventListener('click', e => {
         const rect = bar.getBoundingClientRect();
         video.currentTime = ((e.clientX - rect.left) / rect.width) * video.duration;
       });
-
-      // ±10s
       document.getElementById('btn-back10').onclick = () => { video.currentTime = Math.max(0, video.currentTime - 10); };
       document.getElementById('btn-fwd10').onclick  = () => { video.currentTime = Math.min(video.duration, video.currentTime + 10); };
 
-      // Volumen
       const volSlider = document.getElementById('volume-slider');
       document.getElementById('btn-mute').onclick = () => { video.muted = !video.muted; };
       volSlider.oninput = () => { video.volume = volSlider.value; video.muted = false; };
 
-      // Pantalla completa
       const btnFS = document.getElementById('btn-fullscreen');
       const iconExp = document.getElementById('icon-expand');
       const iconCmp = document.getElementById('icon-compress');
@@ -437,10 +401,8 @@
         }
       };
 
-      // Omitir intro → saltar a s.90
       document.getElementById('skip-intro-btn').onclick = () => { video.currentTime = 90; };
 
-      // Teclado
       document.addEventListener('keydown', e => {
         if (e.target.tagName === 'INPUT') return;
         if (e.code === 'Space')       { e.preventDefault(); togglePlay(); }

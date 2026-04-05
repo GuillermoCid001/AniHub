@@ -61,7 +61,6 @@ a {
     overflow: hidden;
     text-overflow: ellipsis; 
 }
-/* --- Estilos para la Página de Login (login.html) --- */
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
@@ -312,9 +311,6 @@ body {
   margin: 0 auto 32px;
 }
 
-
-/* --- Estilos para la Lista de serie(serie.html) --- */
-
 .back-link {
     color: #fff;
     font-size: 1em;
@@ -416,9 +412,6 @@ body {
     color: #aaa;
 }
 
-
-/* --- Estilos para la Página de Reproductor (reproductor.html) --- */
-
 body.player-page {
     display: flex;
     flex-direction: column;
@@ -466,8 +459,6 @@ body.player-page {
     line-height: 1.5;
 }
 
-
-/* Estilos de la lista de reproducción en la barra lateral */
 .sidebar h3 {
     color: #e50914;
     border-bottom: 1px solid #333;

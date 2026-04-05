@@ -13,11 +13,9 @@ app.use(express.json());
 app.use(cors());
 app.use(express.static(path.join(__dirname, '..')));
 
-// ─── Configuración ────────────────────────────────────────────────────────────
 const JWT_SECRET = process.env.JWT_SECRET;
 const USERS_FILE = path.join(__dirname, 'users.json');
 
-// ─── Nodemailer (Gmail) ───────────────────────────────────────────────────────
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -26,7 +24,6 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-// ─── Helpers de persistencia ──────────────────────────────────────────────────
 function loadUsers() {
   if (!fs.existsSync(USERS_FILE)) {
     const defaults = [
@@ -59,7 +56,6 @@ function saveUsers(users) {
   fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2), 'utf-8');
 }
 
-// Middleware para verificar token JWT
 function authMiddleware(req, res, next) {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
@@ -72,10 +68,8 @@ function authMiddleware(req, res, next) {
   }
 }
 
-// Códigos de verificación pendientes
 const pendingVerifications = new Map();
 
-// ─── LOGIN ────────────────────────────────────────────────────────────────────
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
   const users = loadUsers();
@@ -97,7 +91,6 @@ app.post('/login', async (req, res) => {
   res.json({ token, username: user.username, role: user.role });
 });
 
-// ─── REGISTRO ─────────────────────────────────────────────────────────────────
 app.post('/register', async (req, res) => {
   const { username, email, password } = req.body;
 
@@ -148,7 +141,6 @@ app.post('/register', async (req, res) => {
   res.json({ message: 'Código enviado. Revisa tu bandeja de entrada.' });
 });
 
-// ─── VERIFICAR EMAIL ──────────────────────────────────────────────────────────
 app.post('/verify-email', (req, res) => {
   const { email, code } = req.body;
   if (!email || !code) return res.status(400).json({ error: 'Email y código son obligatorios' });
@@ -169,7 +161,7 @@ app.post('/verify-email', (req, res) => {
     passwordHash: pending.passwordHash,
     role: 'viewer',
     verified: true,
-    profiles: [{ name: pending.username, avatar: '🐉' }]  // perfil inicial automático
+    profiles: [{ name: pending.username, avatar: '🐉' }]
   };
 
   users.push(newUser);
@@ -185,7 +177,6 @@ app.post('/verify-email', (req, res) => {
   res.json({ token, username: newUser.username, role: newUser.role });
 });
 
-// ─── VERIFICAR TOKEN ──────────────────────────────────────────────────────────
 app.get('/verify', (req, res) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
@@ -198,9 +189,6 @@ app.get('/verify', (req, res) => {
   }
 });
 
-// ─── PERFILES ─────────────────────────────────────────────────────────────────
-
-// GET /profiles — obtener perfiles del usuario
 app.get('/profiles', authMiddleware, (req, res) => {
   const users = loadUsers();
   const user = users.find(u => u.id === req.user.id);
@@ -208,7 +196,6 @@ app.get('/profiles', authMiddleware, (req, res) => {
   res.json(user.profiles || []);
 });
 
-// POST /profiles — crear perfil nuevo
 app.post('/profiles', authMiddleware, (req, res) => {
   const { name, avatar } = req.body;
   if (!name || !avatar) return res.status(400).json({ error: 'Nombre y avatar son obligatorios' });
@@ -227,7 +214,6 @@ app.post('/profiles', authMiddleware, (req, res) => {
   res.json({ profiles: users[userIdx].profiles });
 });
 
-// PUT /profiles/:index — editar perfil
 app.put('/profiles/:index', authMiddleware, (req, res) => {
   const { name, avatar } = req.body;
   const index = parseInt(req.params.index);
@@ -247,7 +233,6 @@ app.put('/profiles/:index', authMiddleware, (req, res) => {
   res.json({ profiles });
 });
 
-// DELETE /profiles/:index — eliminar perfil
 app.delete('/profiles/:index', authMiddleware, (req, res) => {
   const index = parseInt(req.params.index);
 

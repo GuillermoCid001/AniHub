@@ -121,7 +121,6 @@
     }
     .btn-manage:hover { border-color: #fff; color: #fff; }
 
-    /* Animación de zoom */
     .zoom-overlay {
       position: fixed;
       inset: 0;
@@ -133,7 +132,6 @@
     }
     .zoom-overlay.active { opacity: 1; pointer-events: all; }
 
-    /* Avatar clonado que hace zoom */
     .avatar-zoom {
       position: fixed;
       z-index: 600;
@@ -144,11 +142,9 @@
       font-size: 3rem;
       background: #222;
       pointer-events: none;
-      /* La posición y tamaño se setean por JS */
       transition: all 0.55s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    /* MODAL */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -279,7 +275,6 @@
 
 <div class="bg-overlay"></div>
 
-<!-- Capa negra para el fade final -->
 <div class="zoom-overlay" id="zoom-overlay"></div>
 
 <div class="profiles-wrapper" id="profiles-wrapper">
@@ -290,7 +285,6 @@
   <button class="btn-manage" id="btn-manage">Gestionar perfiles</button>
 </div>
 
-<!-- MODAL -->
 <div class="modal-overlay" id="modal-overlay">
   <div class="modal">
     <button class="modal-close" onclick="closeModal()">✕</button>
@@ -326,7 +320,6 @@
   const userRaw  = localStorage.getItem('anihub_user');
   if (!token || !userRaw) window.location.href = 'login.html';
 
-  // Cargar perfiles 
   async function loadProfiles() {
     try {
       const res = await fetch(`${BACKEND_URL}/profiles`, {
@@ -338,7 +331,6 @@
     renderProfiles();
   }
 
-  //  Renderizar 
   function renderProfiles() {
     const grid = document.getElementById('profiles-grid');
     grid.innerHTML = '';
@@ -369,17 +361,14 @@
     }
   }
 
-  //  ANIMACIÓN ZOOM + FADE 
   function animateAndEnter(profile, avatarEl) {
-    // Guardar perfil seleccionado
     localStorage.setItem('anihub_profile', JSON.stringify(profile));
 
     const rect = avatarEl.getBoundingClientRect();
     const vw   = window.innerWidth;
     const vh   = window.innerHeight;
-    const size = Math.max(vw, vh) * 2; // tamaño final enorme
+    const size = Math.max(vw, vh) * 2;
 
-    // 1. Clonar el avatar en posición exacta
     const clone = document.createElement('div');
     clone.className = 'avatar-zoom';
     clone.textContent = profile.avatar;
@@ -393,15 +382,12 @@
     `;
     document.body.appendChild(clone);
 
-    // 2. Desvanecer todo lo demás
     const wrapper = document.getElementById('profiles-wrapper');
     wrapper.style.transition = 'opacity 0.35s ease';
     wrapper.style.opacity = '0';
 
-    // 3. Pequeña pausa para que el browser pinte el estado inicial del clone
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        // Zoom: mover al centro y agrandar
         const finalLeft = vw / 2 - size / 2;
         const finalTop  = vh / 2 - size / 2;
 
@@ -413,12 +399,10 @@
         clone.style.opacity   = '0';
         clone.style.background = '#141414';
 
-        // 4. Fade a negro en paralelo
         setTimeout(() => {
           document.getElementById('zoom-overlay').classList.add('active');
         }, 250);
 
-        // 5. Navegar cuando termina todo
         setTimeout(() => {
           window.location.href = 'index.html';
         }, 750);
@@ -426,7 +410,6 @@
     });
   }
 
-  //  Modo gestión 
   const btnManage = document.getElementById('btn-manage');
   btnManage.addEventListener('click', () => {
     manageMode = !manageMode;
@@ -435,7 +418,6 @@
     document.getElementById('profiles-title').textContent = manageMode ? 'Gestionar perfiles' : '¿Quién eres?';
   });
 
-  //  Modal 
   function buildAvatarPicker(selected) {
     const picker = document.getElementById('avatar-picker');
     picker.innerHTML = '';
